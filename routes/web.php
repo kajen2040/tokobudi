@@ -5,11 +5,12 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\DiskonController;
 use App\Http\Controllers\LayoutController;
+use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\PelangganController;
-use App\Http\Controllers\SatuanController;
 
 Route::middleware(['auth', 'verified', 'role:super admin|admin|reseller'])->group(function () {
     // Route::get('/tes', [PageController::class, 'tes'])->name('tes');
@@ -49,8 +50,18 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::delete('satuan/{id}', [SatuanController::class, 'destroy'])
                 ->name('satuan.destroy');
 
-            Route::get('diskon', [BarangController::class, 'diskon'])
+            Route::get('diskon', [DiskonController::class, 'index'])
                 ->name('diskon');
+
+            Route::post('diskon', [DiskonController::class, 'store'])
+                ->name('diskon.store');
+
+            Route::put('diskon/{id}', [DiskonController::class, 'update'])
+                ->name('diskon.update');
+                
+            Route::delete('diskon/{id}', [DiskonController::class, 'destroy'])
+                ->name('diskon.destroy');
+
         }
     );
 

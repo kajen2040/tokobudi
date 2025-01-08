@@ -25,11 +25,6 @@ class BarangController extends Controller
         return view('pages/barang/satuan');
     }
 
-    public function diskon()
-    {
-        return view('pages/barang/diskon');
-    }
-
     public function penjualan()
     {
         return view('pages/point-of-sale');
