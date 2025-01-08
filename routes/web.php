@@ -70,6 +70,15 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
         ->group(function () {
             Route::get('/', [SuplierController::class, 'index'])
                 ->name('index');
+
+            Route::post('/', [SuplierController::class, 'store'])
+                ->name('store');
+
+            Route::put('/{id}', [SuplierController::class, 'update'])
+                ->name('update');
+                
+            Route::delete('/{id}', [SuplierController::class, 'destroy'])
+                ->name('destroy');
         }
     );
 
@@ -78,6 +87,15 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
         ->group(function () {
             Route::get('/', [PelangganController::class, 'index'])
                 ->name('index');
+
+            Route::post('/', [PelangganController::class, 'store'])
+                ->name('store');
+
+            Route::put('/{id}', [PelangganController::class, 'update'])
+                ->name('update');
+                
+            Route::delete('/{id}', [PelangganController::class, 'destroy'])
+                ->name('destroy');
         }
     );
 

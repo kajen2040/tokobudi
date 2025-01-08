@@ -11,24 +11,28 @@ class SuplierController extends Controller
     {
         $data = Suplier::all();
 
-        return view('pages/suplier', compact('data'));
+        return view('pages/suplier/index', compact('data'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'suplier' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
         ]);
 
         Suplier::create($request->all());
 
-        return redirect()->route('suplier')->with('success', 'Suplier berhasil ditambahkan.');
+        return redirect()->route('suplier.index')->with('success', 'Suplier berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'suplier' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
         ]);
 
         $suplier = Suplier::findOrFail($id);
