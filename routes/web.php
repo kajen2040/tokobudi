@@ -26,6 +26,15 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::get('/', [BarangController::class, 'index'])
                 ->name('index');
 
+            Route::post('/', [BarangController::class, 'store'])
+                ->name('store');
+
+            Route::put('/{id}', [BarangController::class, 'update'])
+                ->name('update');
+                
+            Route::delete('/{id}', [BarangController::class, 'destroy'])
+                ->name('destroy');
+
             Route::get('jenis', [JenisController::class, 'index'])
                 ->name('jenis');
 

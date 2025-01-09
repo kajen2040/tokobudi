@@ -2,79 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jenis;
 use App\Models\Barang;
+use App\Models\Satuan;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('pages/barang/index');
+        $jenis = Jenis::all();
+        $satuan = Satuan::all();
+        $data = Barang::with('detail')->get();
+        return view('pages.barang.index', compact('jenis', 'satuan'));
     }
 
-    public function jenis()
-    {
-        return view('pages/barang/jenis');
-    }
-
-    public function satuan()
-    {
-        return view('pages/barang/satuan');
-    }
-
-    public function penjualan()
-    {
-        return view('pages/point-of-sale');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'stok' => 'nullable',
+            'status' => 'nullable',
+            'jenis_id' => 'required|exists:jenis,id',
+            'satuan_id' => 'required|exists:satuan,id',
+            'harga_beli' => 'required|numeric',
+            'harga_jual' => 'required|numeric',
+            'barcode' => 'nullable|string|max:255',
+        ]);
+
+        $fotoPath = $request->hasFile('foto') 
+            ? $request->file('foto')->store('barang', 'public') 
+            : null;
+
+        $barang = Barang::create([
+            'nama' => $validated['nama'],
+            'foto' => $fotoPath,
+            'stok' => $validated['stok'],
+            'status' => $validated['status'],
+        ]);
+
+        $barang->detail()->create([
+            'jenis_id' => $validated['jenis_id'],
+            'satuan_id' => $validated['satuan_id'],
+            'harga_beli' => $validated['harga_beli'],
+            'harga_jual' => $validated['harga_jual'],
+            'barcode' => $validated['barcode'],
+        ]);
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Barang $barang)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Barang $barang)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Barang $barang)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'stok' => 'required|integer',
+            'status' => 'required|in:aktif,nonaktif',
+            'jenis_id' => 'required|exists:jenis,id',
+            'satuan_id' => 'required|exists:satuan,id',
+            'harga_beli' => 'required|numeric',
+            'harga_jual' => 'required|numeric',
+            'barcode' => 'nullable|string|max:255',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('barang', 'public');
+            $barang->foto = $fotoPath;
+        }
+
+        $barang->update([
+            'nama' => $validated['nama'],
+            'stok' => $validated['stok'],
+            'status' => $validated['status'],
+        ]);
+
+        $barang->detail()->update([
+            'jenis_id' => $validated['jenis_id'],
+            'satuan_id' => $validated['satuan_id'],
+            'harga_beli' => $validated['harga_beli'],
+            'harga_jual' => $validated['harga_jual'],
+            'barcode' => $validated['barcode'],
+        ]);
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Barang $barang)
     {
-        //
+        $barang->detail()->delete();
+        $barang->delete();
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
     }
 }

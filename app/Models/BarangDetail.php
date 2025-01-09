@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Barang extends Model
+class BarangDetail extends Model
 {
     use HasFactory;
-    
-    protected $table = 'barang';
 
-    protected $fillable = ['nama', 'foto', 'stok', 'status'];
+    protected $table = 'barang_detail';
 
-    public function detail()
+    protected $fillable = ['barang_id', 'jenis_id', 'satuan_id', 'harga_beli', 'harga_jual', 'barcode'];
+
+    public function barang()
     {
-        return $this->hasOne(BarangDetail::class, 'barang_id');
+        return $this->belongsTo(Barang::class);
     }
 
     public function jenis()
@@ -27,5 +27,4 @@ class Barang extends Model
     {
         return $this->belongsTo(Satuan::class);
     }
-
 }

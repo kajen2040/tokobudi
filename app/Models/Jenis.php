@@ -12,4 +12,9 @@ class Jenis extends Model
     protected $table = 'jenis';
 
     protected $fillable = ['jenis'];
+
+    public function barang()
+    {
+        return $this->hasMany(Barang::class);
+    }
 }

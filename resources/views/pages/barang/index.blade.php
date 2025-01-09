@@ -17,7 +17,9 @@
                 TAMBAH
             </x-base.button>
             <div class="mx-auto hidden text-slate-500 xl:block">
-                Showing 1 to 10 of 10 entries
+                @if (session('success'))
+                    <div class="text-green-600">{{ session('success') }}</div>
+                @endif
             </div>
             <div class="mt-3 flex w-full items-center xl:mt-0 xl:w-auto">
                 <div class="relative w-56 text-slate-500">
@@ -157,220 +159,101 @@
                     />
                 </x-base.pagination.link>
             </x-base.pagination>
-            <x-base.form-select class="!box mt-3 w-20 sm:mt-0">
-                <option>10</option>
-                <option>25</option>
-                <option>35</option>
-                <option>50</option>
-            </x-base.form-select>
         </div>
         <!-- END: Pagination -->
     </div>
 
-    <!-- BEGIN: Tambah Jenis Modal -->
+    
+    <!-- BEGIN: Tambah Barang Modal -->
     <x-base.preview-component class="intro-y">
         <div class="p-5">
             <x-base.preview>
                 <!-- BEGIN: Modal Content -->
                 <x-base.dialog id="tambah-barang-modal-preview">
                     <x-base.dialog.panel>
-                        <x-base.dialog.title>
-                            <h2 class="mr-auto text-base font-medium">
-                                Tambah Barang
-                            </h2>
-                        </x-base.dialog.title>
-                        <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                            <div class="col-span-12 sm:col-span-12">
-                                <x-base.form-label for="modal-form-1">Barang baru</x-base.form-label>
-                                <x-base.form-input
-                                    id="modal-form-1"
-                                    type="text"
-                                    placeholder="Contoh : Beras Rojolele"
-                                />
-                            </div>
-                            <div class="col-span-12 sm:col-span-6">
-                                <x-base.form-label for="modal-form-6">Jenis</x-base.form-label>
-                                <x-base.form-select id="modal-form-6">
-                                    <option>Beras</option>
-                                    <option>Mie Instan</option>
-                                    <option>Minyak Goreng</option>
-                                </x-base.form-select>
-                            </div>
-                            <div class="col-span-12 sm:col-span-6">
-                                <x-base.form-label for="modal-form-6">Satuan</x-base.form-label>
-                                <x-base.form-select id="modal-form-6">
-                                    <option>Kg</option>
-                                    <option>Lt</option>
-                                    <option>Bungkus</option>
-                                    <option>Lusin</option>
-                                </x-base.form-select>
-                            </div>
-                        </x-base.dialog.description>
-                        <x-base.dialog.footer>
-                            <x-base.button
-                                class="mr-1 w-20"
-                                data-tw-dismiss="modal"
-                                type="button"
-                                variant="outline-secondary"
-                            >
-                                Batal
-                            </x-base.button>
-                            <x-base.button
-                                class="w-20 text-white"
-                                type="button"
-                                variant="success"
-                            >
-                                Simpan
-                            </x-base.button>
-                        </x-base.dialog.footer>
-                    </x-base.dialog.panel>
-                </x-base.dialog>
-                <!-- END: Modal Content -->
-            </x-base.preview>
-        </div>
-    </x-base.preview-component>
-    <!-- END: Tambah Jenis Modal -->
-    <!-- BEGIN: Tambah Jenis Modal -->
-    <x-base.preview-component class="intro-y">
-        <div class="p-5">
-            <x-base.preview>
-                <!-- BEGIN: Modal Content -->
-                <x-base.dialog id="header-footer-modal-preview">
-                    <x-base.dialog.panel>
-                        <x-base.dialog.title>
-                            <h2 class="mr-auto text-base font-medium">
-                                Tambah Jenis
-                            </h2>
-                        </x-base.dialog.title>
-                        <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                            <div class="col-span-12 sm:col-span-12">
-                                {{-- <h2 class="intro-y mt-6 text-lg font-medium">Data jenis</h2> --}}
-                                <x-base.table class="-mt-1 border-separate border-spacing-y-[6px]">
-                                    <x-base.table.thead>
-                                        <x-base.table.tr>
-                                            <x-base.table.th class="whitespace-nowrap border-b-0">
-                                                Nama
-                                            </x-base.table.th>
-                                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                                                Tindakan
-                                            </x-base.table.th>
-                                        </x-base.table.tr>
-                                    </x-base.table.thead>
-                                    <x-base.table.tbody>
-                                        @foreach (array_slice($fakers, 0, 3) as $faker)
-                                            <x-base.table.tr class="intro-x">
-                                                <x-base.table.td
-                                                    class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 !py-3.5 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                                                >
-                                                    <div class="flex items-center">
-                                                        <div class="">
-                                                            <a
-                                                                class="whitespace-nowrap "
-                                                                href=""
-                                                            >
-                                                                {{ $faker['users'][0]['name'] }}
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </x-base.table.td>
-                                                <x-base.table.td @class([
-                                                    'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
-                                                    'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
-                                                ])>
-                                                    <div class="flex items-center justify-center">
-                                                        <a
-                                                            class="mr-3 flex items-center"
-                                                            href="#"
-                                                        >
-                                                            <x-base.lucide
-                                                                class="mr-1 h-4 w-4"
-                                                                icon="CheckSquare"
-                                                            />
-                                                            Edit
-                                                        </a>
-                                                        <a
-                                                            class="flex items-center text-danger"
-                                                            data-tw-toggle="modal"
-                                                            data-tw-target="#delete-confirmation-modal"
-                                                            href="#"
-                                                        >
-                                                            <x-base.lucide
-                                                                class="mr-1 h-4 w-4"
-                                                                icon="Trash"
-                                                            /> Delete
-                                                        </a>
-                                                    </div>
-                                                </x-base.table.td>
-                                            </x-base.table.tr>
+                        <form action="{{ route('barang.store') }}" method="POST">
+                            @csrf
+                            <x-base.dialog.title>
+                                <h2 class="mr-auto text-base font-medium">
+                                    Tambah Barang
+                                </h2>
+                            </x-base.dialog.title>
+                            <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="barang-nama">Nama Barang</x-base.form-label>
+                                    <x-base.form-input
+                                        id="barang-nama"
+                                        type="text"
+                                        name="barang"
+                                        placeholder="Contoh: Indomie Goreng Ayam"
+                                    />
+                                </div>
+                                <div class="col-span-12 sm:col-span-6">
+                                    <x-base.form-label for="barang-jenis">Jenis</x-base.form-label>
+                                    <x-base.form-select id="barang-jenis" name="jenis">
+                                        @foreach ($jenis as $item)
+                                            <option value="{{ $item->id }}">{{ $item->jenis }}</option>
                                         @endforeach
-                                    </x-base.table.tbody>
-                                </x-base.table>
-                            </div>
-                            <div class="col-span-12 sm:col-span-12">
-                                <x-base.form-label for="modal-form-1">Jenis baru</x-base.form-label>
-                                <x-base.form-input
-                                    id="modal-form-1"
-                                    type="text"
-                                    placeholder="Karet"
-                                />
-                            </div>
-                        </x-base.dialog.description>
-                        <x-base.dialog.footer>
-                            <x-base.button
-                                class="mr-1 w-20"
-                                data-tw-dismiss="modal"
-                                type="button"
-                                variant="outline-secondary"
-                            >
-                                Batal
-                            </x-base.button>
-                            <x-base.button
-                                class="w-20"
-                                type="button"
-                                variant="primary"
-                            >
-                                Simpan
-                            </x-base.button>
-                        </x-base.dialog.footer>
+                                    </x-base.form-select>
+                                </div>
+                                <div class="col-span-12 sm:col-span-6">
+                                    <x-base.form-label for="barang-satuan">Satuan</x-base.form-label>
+                                    <x-base.form-select id="barang-satuan" name="satuan">
+                                        @foreach ($satuan as $item)
+                                            <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->satuan }}</p></option>
+                                        @endforeach
+                                    </x-base.form-select>
+                                </div>
+                                <div class="col-span-12 sm:col-span-6">
+                                    <x-base.form-label for="barang-harga-beli">Harga Beli</x-base.form-label>
+                                    <x-base.form-input
+                                        id="barang-harga-beli"
+                                        type="number"
+                                        name="harga_beli"
+                                        placeholder="Contoh: 50000"
+                                    />
+                                </div>
+                                <div class="col-span-12 sm:col-span-6">
+                                    <x-base.form-label for="barang-harga-jual">Harga Jual</x-base.form-label>
+                                    <x-base.form-input
+                                        id="barang-harga-jual"
+                                        type="number"
+                                        name="harga_beli"
+                                        placeholder="Contoh: 75000"
+                                    />
+                                </div>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="barang-foto">Foto Barang</x-base.form-label>
+                                    <x-base.form-input
+                                        id="barang-foto"
+                                        type="file"
+                                        name="foto"
+                                    />
+                                </div>
+                            </x-base.dialog.description>
+                            <x-base.dialog.footer>
+                                <x-base.button
+                                    class="mr-1 w-20"
+                                    data-tw-dismiss="modal"
+                                    type="button"
+                                    variant="outline-secondary"
+                                >
+                                    Batal
+                                </x-base.button>
+                                <x-base.button
+                                    class="w-20 text-white"
+                                    type="submit"
+                                    variant="success"
+                                >
+                                    Simpan
+                                </x-base.button>
+                            </x-base.dialog.footer>
+                        </form>
                     </x-base.dialog.panel>
                 </x-base.dialog>
                 <!-- END: Modal Content -->
             </x-base.preview>
         </div>
     </x-base.preview-component>
-    <!-- END: Tambah Jenis Modal -->
-    <!-- BEGIN: Delete Confirmation Modal -->
-    <x-base.dialog id="delete-confirmation-modal">
-        <x-base.dialog.panel>
-            <div class="p-5 text-center">
-                <x-base.lucide
-                    class="mx-auto mt-3 h-16 w-16 text-danger"
-                    icon="XCircle"
-                />
-                <div class="mt-5 text-3xl">Apakah Anda yakin?</div>
-                <div class="mt-2 text-slate-500">
-                    Data akan dihapus secara permanen. <br />
-                    Apabila sudah dihapus tidak dapat dikembalikan lagi.
-                </div>
-            </div>
-            <div class="px-5 pb-8 text-center">
-                <x-base.button
-                    class="mr-1 w-24"
-                    data-tw-dismiss="modal"
-                    type="button"
-                    variant="outline-secondary"
-                >
-                    Batal
-                </x-base.button>
-                <x-base.button
-                    class="w-24"
-                    type="button"
-                    variant="danger"
-                >
-                    Hapus
-                </x-base.button>
-            </div>
-        </x-base.dialog.panel>
-    </x-base.dialog>
-    <!-- END: Delete Confirmation Modal -->
+    <!-- END: Tambah Barang Modal -->
 @endsection
