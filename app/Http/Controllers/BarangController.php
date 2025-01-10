@@ -22,34 +22,36 @@ class BarangController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'stok' => 'nullable',
-            'status' => 'nullable',
-            'jenis_id' => 'required|exists:jenis,id',
-            'satuan_id' => 'required|exists:satuan,id',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
+            'stok' => 'nullable|integer|min:0',
+            'status' => 'nullable|in:1,0',
+            'jenis' => 'required|exists:jenis,id',
+            'satuan' => 'required|exists:satuan,id',
+            'harga_beli' => 'required|numeric|min:0',
+            'harga_jual' => 'required|numeric|min:0',
             'barcode' => 'nullable|string|max:255',
         ]);
 
-        $fotoPath = $request->hasFile('foto') 
-            ? $request->file('foto')->store('barang', 'public') 
+        // dd($validated);
+    
+        $fotoPath = $request->hasFile('foto')
+            ? $request->file('foto')->store('barang', 'public')
             : null;
-
+    
         $barang = Barang::create([
             'nama' => $validated['nama'],
             'foto' => $fotoPath,
-            'stok' => $validated['stok'],
-            'status' => $validated['status'],
+            'stok' => $validated['stok'] ?? 0,
+            'status' => $validated['status'] ?? 'available',
         ]);
-
+    
         $barang->detail()->create([
-            'jenis_id' => $validated['jenis_id'],
-            'satuan_id' => $validated['satuan_id'],
+            'jenis_id' => $validated['jenis'],
+            'satuan_id' => $validated['satuan'],
             'harga_beli' => $validated['harga_beli'],
             'harga_jual' => $validated['harga_jual'],
             'barcode' => $validated['barcode'],
         ]);
-
+    
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan.');
     }
 

@@ -171,7 +171,7 @@
                 <!-- BEGIN: Modal Content -->
                 <x-base.dialog id="tambah-barang-modal-preview">
                     <x-base.dialog.panel>
-                        <form action="{{ route('barang.store') }}" method="POST">
+                        <form action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <x-base.dialog.title>
                                 <h2 class="mr-auto text-base font-medium">
@@ -184,7 +184,7 @@
                                     <x-base.form-input
                                         id="barang-nama"
                                         type="text"
-                                        name="barang"
+                                        name="nama"
                                         placeholder="Contoh: Indomie Goreng Ayam"
                                     />
                                 </div>
@@ -218,7 +218,7 @@
                                     <x-base.form-input
                                         id="barang-harga-jual"
                                         type="number"
-                                        name="harga_beli"
+                                        name="harga_jual"
                                         placeholder="Contoh: 75000"
                                     />
                                 </div>
@@ -228,6 +228,21 @@
                                         id="barang-foto"
                                         type="file"
                                         name="foto"
+                                    />
+                                    <x-base.form-input
+                                        id="barang-stok"
+                                        type="hidden"
+                                        name="stok"
+                                    />
+                                    <x-base.form-input
+                                        id="barang-status"
+                                        type="hidden"
+                                        name="status"
+                                    />
+                                    <x-base.form-input
+                                        id="barang-barcode"
+                                        type="hidden"
+                                        name="barcode"
                                     />
                                 </div>
                             </x-base.dialog.description>
