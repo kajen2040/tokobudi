@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('jenis_id')->references('id')->on('jenis')->constrained('jenis', 'id');
             $table->foreignId('satuan_id')->references('id')->on('satuan')->constrained('satuan', 'id');
 
-            $table->integer('harga_beli');
-            $table->integer('harga_jual');
+            $table->integer('harga_beli')->nullable();
+            $table->integer('harga_jual')->nullable();
             $table->string('barcode')->nullable();
             
             $table->timestamps();

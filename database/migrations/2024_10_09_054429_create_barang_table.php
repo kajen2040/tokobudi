@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('foto');
-            $table->integer('stok');
-            $table->boolean('status');
+            $table->integer('stok')->nullable();
+            $table->boolean('status')->nullable();
             $table->timestamps();
         });
     }
