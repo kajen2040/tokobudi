@@ -41,7 +41,7 @@ class BarangController extends Controller
             'nama' => $validated['nama'],
             'foto' => $fotoPath,
             'stok' => $validated['stok'] ?? 0,
-            'status' => $validated['status'] ?? 'available',
+            'status' => $validated['status'] ?? 1,
         ]);
     
         $barang->detail()->create([
