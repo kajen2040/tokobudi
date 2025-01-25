@@ -111,6 +111,7 @@
                                         class="flex items-center text-danger"
                                         data-tw-toggle="modal"
                                         data-tw-target="#delete-confirmation-modal"
+                                        onclick="openDeleteModal('{{ route('barang.destroy', 3) }}')"
                                         href="#"
                                     >
                                         <x-base.lucide
@@ -271,4 +272,55 @@
         </div>
     </x-base.preview-component>
     <!-- END: Tambah Barang Modal -->
+
+    <!-- BEGIN: Delete Confirmation Modal -->
+    <x-base.dialog id="delete-confirmation-modal">
+        <x-base.dialog.panel>
+            <div class="p-5 text-center">
+                <x-base.lucide
+                    class="mx-auto mt-3 h-16 w-16 text-danger"
+                    icon="XCircle"
+                />
+                <div class="mt-5 text-3xl">Apakah Anda yakin?</div>
+                <div class="mt-2 text-slate-500">
+                    Data akan dihapus secara permanen dan <br />
+                    tidak bisa dikembalikan lagi.
+                </div>
+            </div>
+            <div class="px-5 pb-8 text-center">
+                <form id="delete-barang-form" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <x-base.button
+                        class="mr-1 w-24"
+                        data-tw-dismiss="modal"
+                        type="button"
+                        variant="outline-secondary"
+                    >
+                        Cancel
+                    </x-base.button>
+                    <x-base.button
+                        class="w-24"
+                        type="submit"
+                        variant="danger"
+                    >
+                        Delete
+                    </x-base.button>
+                </form>
+            </div>
+        </x-base.dialog.panel>
+    </x-base.dialog>
+    <!-- END: Delete Confirmation Modal -->
 @endsection
+
+<script>
+    function openEditModal(url, jenis) {
+        document.getElementById('edit-barang-form').action = url;
+        document.getElementById('edit-modal-form-1').value = jenis;
+    }
+
+    function openDeleteModal(url) {
+        const deleteForm = document.getElementById('delete-barang-form');
+        deleteForm.action = url;
+    }
+</script>

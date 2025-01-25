@@ -14,7 +14,7 @@ class BarangController extends Controller
         $jenis = Jenis::all();
         $satuan = Satuan::all();
         $data = Barang::with('detail')->get();
-        return view('pages.barang.index', compact('jenis', 'satuan'));
+        return view('pages.barang.index', compact('jenis', 'satuan', 'data'));
     }
 
     public function store(Request $request)
@@ -91,8 +91,10 @@ class BarangController extends Controller
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui.');
     }
 
-    public function destroy(Barang $barang)
+    public function destroy($id)
     {
+        $barang = Barang::findOrFail($id);
+
         $barang->detail()->delete();
         $barang->delete();
 
