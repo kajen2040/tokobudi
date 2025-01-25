@@ -80,7 +80,7 @@
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->jenis->jenis }}
+                                {{-- {{ $barang->jenis->jenis }} --}}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
@@ -90,7 +90,7 @@
                             <x-base.table.td
                                 class="box w-40 whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->satuan->satuan }}
+                                {{-- {{ $barang->satuan->satuan }} --}}
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
