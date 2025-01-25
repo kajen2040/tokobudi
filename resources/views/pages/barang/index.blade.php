@@ -111,7 +111,7 @@
                                         class="flex items-center text-danger"
                                         data-tw-toggle="modal"
                                         data-tw-target="#delete-confirmation-modal"
-                                        onclick="openDeleteModal('{{ route('barang.destroy', {{ $barang->id }}) }}')"
+                                        onclick="openDeleteModal('{{ route('barang.destroy', $barang->id ) }}')"
                                         href="#"
                                     >
                                         <x-base.lucide
