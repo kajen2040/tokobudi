@@ -58,7 +58,7 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach (array_slice($fakers, 0, 9) as $faker)
+                    @foreach ($data as $barang)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 !py-3.5 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
@@ -67,30 +67,30 @@
                                     <div class="image-fit zoom-in h-9 w-9">
                                         <x-base.tippy
                                             class="rounded-lg border-white shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ Vite::asset($faker['images'][0]) }}"
+                                            src="{{ Vite::asset('images/faker/food-beverage-1.jpg') }}"
                                             alt="Toko Budi"
                                             as="img"
                                         />
                                     </div>
                                     <div class="ml-4">
-                                        Indomie Goreng
+                                        {{ $barang->nama }}
                                     </div>
                                 </div>
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Mie Instan
+                                {{ $barang->jenis->jenis }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                20
+                                3
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box w-40 whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Bungkus
+                                {{ $barang->satuan->satuan }}
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',

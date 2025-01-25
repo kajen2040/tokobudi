@@ -11,10 +11,13 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $jenis = Jenis::all();
-        $satuan = Satuan::all();
-        $data = Barang::with('detail')->get();
-        return view('pages.barang.index', compact('jenis', 'satuan', 'data'));
+        // $jenis = Jenis::all();
+        // $satuan = Satuan::all();
+        $data = Barang::with('detail')
+                        ->with('jenis')
+                        ->with('satuan')
+                        ->get();
+        return view('pages.barang.index', compact('data'));
     }
 
     public function store(Request $request)
