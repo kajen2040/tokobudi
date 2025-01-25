@@ -15,8 +15,8 @@ class BarangController extends Controller
         $satuan = Satuan::all();
 
         $data = Barang::with('detail')
-                        ->with('jenis')
-                        ->with('satuan')
+                        // ->with('jenis')
+                        // ->with('satuan')
                         ->get();
         return view('pages.barang.index', compact('jenis', 'satuan', 'data'));
     }
