@@ -67,7 +67,7 @@
                                     <div class="image-fit zoom-in h-9 w-9">
                                         <x-base.tippy
                                             class="rounded-lg border-white shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ Vite::asset('images/faker/food-beverage-1.jpg') }}"
+                                            src="{{ asset('storage/images/barang/food-beverage-1.jpg') }}"
                                             alt="Toko Budi"
                                             as="img"
                                         />
