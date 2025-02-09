@@ -71,47 +71,47 @@
                 </x-base.table.thead>
                 <x-base.table.tbody>
                     
-                    {{-- @foreach ($data as $jenis) --}}
+                    @foreach ($data as $transaksi)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                05/02/2025
+                                {{ $transaksi->tgl_transaksi }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                PT. Indofood
+                                {{ $transaksi->suplier->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Mie Goreng
+                                {{ $transaksi->barang->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                10
+                                {{ $transaksi->jml_barang }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Kardus
+                                Botol
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Mie Instan
+                                Air Mineral
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Rp 25.000,-
+                                {{ $transaksi->barangDetail->harga_beli }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Rp 28.000,-
+                                {{ $transaksi->barangDetail->harga_jual }}
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
@@ -146,7 +146,7 @@
                                 </div>
                             </x-base.table.td>
                         </x-base.table.tr>
-                    {{-- @endforeach --}}
+                    @endforeach
                 </x-base.table.tbody>
             </x-base.table>
         </div>
@@ -195,7 +195,7 @@
                 <!-- BEGIN: Modal Content -->
                 <x-base.dialog id="tambah-barang-modal-preview">
                     <x-base.dialog.panel>
-                        <form action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('transaksi.gudang.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <x-base.dialog.title>
                                 <h2 class="mr-auto text-base font-medium">
@@ -208,31 +208,31 @@
                                     <x-base.form-input
                                         id="tanggal"
                                         type="date"
-                                        name="tanggal"
+                                        name="tgl_transaksi"
                                     />
                                 </div>
                                 <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang-satuan">Suplier</x-base.form-label>
-                                    <x-base.form-select id="barang-satuan" name="satuan">
+                                    <x-base.form-label for="suplier">Suplier</x-base.form-label>
+                                    <x-base.form-select id="suplier" name="suplier_id">
                                         @foreach ($suplier as $item)
                                             <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->nama }}</p></option>
                                         @endforeach
                                     </x-base.form-select>
                                 </div>
                                 <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang-nama">Nama Barang</x-base.form-label>
-                                    <x-base.form-select id="barang-satuan" name="satuan">
+                                    <x-base.form-label for="barang">Nama Barang</x-base.form-label>
+                                    <x-base.form-select id="barang" name="barang_id">
                                         @foreach ($barang as $item)
                                             <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->nama }}</p></option>
                                         @endforeach
                                     </x-base.form-select>
                                 </div>
                                 <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang-nama">Jumlah</x-base.form-label>
+                                    <x-base.form-label for="jumlah">Jumlah</x-base.form-label>
                                     <x-base.form-input
                                         id="jumlah"
                                         type="number"
-                                        name="jumlah"
+                                        name="jml_barang"
                                     />
                                 </div>
                                 <div class="col-span-12 sm:col-span-6">

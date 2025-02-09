@@ -7,6 +7,9 @@ use App\Models\Barang;
 use App\Models\Satuan;
 use App\Models\Suplier;
 use Illuminate\Http\Request;
+use App\Models\TransaksiGudang;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiGudangController extends Controller
 {
@@ -18,45 +21,52 @@ class TransaksiGudangController extends Controller
 
         $barang = Barang::with('detail')->get();
 
-        return view('pages.transaksi.gudang', compact('suplier', 'jenis', 'satuan', 'barang'));
+        $data = TransaksiGudang::all();
+
+        // $userId = Auth::id();
+        // dd($userId);
+
+        return view('pages.transaksi.gudang', compact('data', 'suplier', 'jenis', 'satuan', 'barang'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'stok' => 'nullable|integer|min:0',
-            'status' => 'nullable|in:1,0',
-            'jenis' => 'required|exists:jenis,id',
-            'satuan' => 'required|exists:satuan,id',
+            'tgl_transaksi' => 'required',
+            'suplier_id' => 'required',
+            'barang_id' => 'required|exists:barang,id',
+            'jml_barang' => 'required|numeric|min:0',
             'harga_beli' => 'required|numeric|min:0',
             'harga_jual' => 'required|numeric|min:0',
-            'barcode' => 'nullable|string|max:255',
         ]);
+        
+        $userId = Auth::id();
+        // dd($userId);
 
-        // dd($validated);
+        // Gunakan transaksi database untuk memastikan integritas data
+        DB::transaction(function () use ($validated, $userId) {
+            // Simpan transaksi ke dalam tabel transaksi_gudang
+            $gudang = TransaksiGudang::create([
+                'tgl_transaksi' => $validated['tgl_transaksi'],
+                'suplier_id' => $validated['suplier_id'] ?? 10,
+                'barang_id' => $validated['barang_id'],
+                'jml_barang' => $validated['jml_barang'],
+                'user_id' => $userId,
+                'keterangan' => "-",
+            ]);
+
+            // Ambil data barang berdasarkan barang_id
+            $barang = Barang::findOrFail($validated['barang_id']);
+
+            // Update stok dengan menambah jumlah barang yang masuk
+            $barang->update([
+                'stok' => $barang->stok + $validated['jml_barang'],
+                'harga_beli' => $validated['harga_beli'],
+                'harga_jual' => $validated['harga_jual'],
+            ]);
+        });
     
-        $fotoPath = $request->hasFile('foto')
-            ? $request->file('foto')->store('barang', 'public')
-            : null;
-    
-        $barang = Barang::create([
-            'nama' => $validated['nama'],
-            'foto' => $fotoPath,
-            'stok' => $validated['stok'] ?? 0,
-            'status' => $validated['status'] ?? 1,
-        ]);
-    
-        $barang->detail()->create([
-            'jenis_id' => $validated['jenis'],
-            'satuan_id' => $validated['satuan'],
-            'harga_beli' => $validated['harga_beli'],
-            'harga_jual' => $validated['harga_jual'],
-            'barcode' => $validated['barcode'],
-        ]);
-    
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan.');
+        return redirect()->route('transaksi.gudang')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)

@@ -12,13 +12,18 @@ class TransaksiGudang extends Model
 {
     use HasFactory;
 
-    protected $table = 'barang';
+    protected $table = 'transaksi_gudang';
 
-    protected $fillable = ['nama', 'foto', 'stok', 'status'];
+    protected $fillable = ['user_id', 'barang_id', 'suplier_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
 
-    public function detail()
+    public function barang()
     {
-        return $this->hasOne(BarangDetail::class, 'barang_id');
+        return $this->belongsTo(Barang::class, 'barang_id', 'id');
+    }
+    
+    public function barangDetail()
+    {
+        return $this->hasOneThrough(BarangDetail::class, Barang::class, 'id', 'barang_id', 'barang_id', 'id');
     }
 
     public function jenis()
@@ -29,5 +34,10 @@ class TransaksiGudang extends Model
     public function satuan()
     {
         return $this->belongsTo(Satuan::class);
+    }
+
+    public function suplier()
+    {
+        return $this->belongsTo(Suplier::class, 'suplier_id');
     }
 }
