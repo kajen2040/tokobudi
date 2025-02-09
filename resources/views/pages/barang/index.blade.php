@@ -44,10 +44,10 @@
                             Nama
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Jenis
+                            Stok
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Stok
+                            Jenis
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Satuan
@@ -80,12 +80,12 @@
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->detail->jenis->jenis }}
+                                {{ $barang->stok }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->stok }}
+                                {{ $barang->detail->jenis->jenis }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box w-40 whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
