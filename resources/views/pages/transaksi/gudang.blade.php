@@ -1,11 +1,11 @@
 @extends('../../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Data Barang</title>
+    <title>Transaksi Gudang</title>
 @endsection
 
 @section('subcontent')
-    <h2 class="intro-y mt-10 text-lg font-medium uppercase">DATA BARANG</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium uppercase">Transaksi Gudang</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center xl:flex-nowrap">
             <x-base.button
@@ -26,7 +26,7 @@
                     <x-base.form-input
                         class="!box w-56 pr-10"
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Cari..."
                     />
                     <x-base.lucide
                         class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4"
@@ -41,16 +41,28 @@
                 <x-base.table.thead>
                     <x-base.table.tr>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Nama
+                            Tanggal
                         </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Suplier
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Barang
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Jumlah
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Satuan
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
                             Jenis
                         </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Stok
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Harga Beli
                         </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Satuan
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Harga Jual
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Tindakan
@@ -58,39 +70,48 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach ($data as $barang)
+                    
+                    {{-- @foreach ($data as $jenis) --}}
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td
-                                class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 !py-3.5 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                <div class="flex items-center">
-                                    <div class="image-fit zoom-in h-9 w-9">
-                                        <img
-                                            class="rounded-lg border-white shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ asset('storage/'. $barang->foto) }}"
-                                            alt="Toko Budi"
-                                            as="img"
-                                        />
-                                    </div>
-                                    <div class="ml-4">
-                                        {{ $barang->nama }}
-                                    </div>
-                                </div>
+                                05/02/2025
                             </x-base.table.td>
                             <x-base.table.td
-                                class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->detail->jenis->jenis }}
+                                PT. Indofood
                             </x-base.table.td>
                             <x-base.table.td
-                                class="box whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->stok }}
+                                Mie Goreng
                             </x-base.table.td>
                             <x-base.table.td
-                                class="box w-40 whitespace-nowrap rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->detail->satuan->satuan }}
+                                10
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                Kardus
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                Mie Instan
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                Rp 25.000,-
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                Rp 28.000,-
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
@@ -100,6 +121,9 @@
                                     <a
                                         class="mr-3 flex items-center"
                                         href="#"
+                                        data-tw-toggle="modal"
+                                        data-tw-target="#edit-barang-modal"
+                                        {{-- onclick="openEditModal('{{ route('barang.jenis.update', $jenis->id) }}', '{{ $jenis->jenis }}')" --}}
                                     >
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
@@ -111,7 +135,7 @@
                                         class="flex items-center text-danger"
                                         data-tw-toggle="modal"
                                         data-tw-target="#delete-confirmation-modal"
-                                        onclick="openDeleteModal('{{ route('barang.destroy', $barang->id ) }}')"
+                                        {{-- onclick="openDeleteModal('{{ route('barang.jenis.destroy', $jenis->id) }}')" --}}
                                         href="#"
                                     >
                                         <x-base.lucide
@@ -122,7 +146,7 @@
                                 </div>
                             </x-base.table.td>
                         </x-base.table.tr>
-                    @endforeach
+                    {{-- @endforeach --}}
                 </x-base.table.tbody>
             </x-base.table>
         </div>
@@ -143,9 +167,9 @@
                     />
                 </x-base.pagination.link>
                 <x-base.pagination.link>...</x-base.pagination.link>
-                <x-base.pagination.link>1</x-base.pagination.link>
-                <x-base.pagination.link active>2</x-base.pagination.link>
-                <x-base.pagination.link>3</x-base.pagination.link>
+                <x-base.pagination.link active>1</x-base.pagination.link>
+                {{-- <x-base.pagination.link>2</x-base.pagination.link>
+                <x-base.pagination.link>3</x-base.pagination.link> --}}
                 <x-base.pagination.link>...</x-base.pagination.link>
                 <x-base.pagination.link>
                     <x-base.lucide
@@ -164,8 +188,7 @@
         <!-- END: Pagination -->
     </div>
 
-    
-    <!-- BEGIN: Tambah Barang Modal -->
+    <!-- BEGIN: Tambah Transaksi Modal -->
     <x-base.preview-component class="intro-y">
         <div class="p-5">
             <x-base.preview>
@@ -176,34 +199,41 @@
                             @csrf
                             <x-base.dialog.title>
                                 <h2 class="mr-auto text-base font-medium">
-                                    Tambah Barang
+                                    Tambah Transaksi Gudang
                                 </h2>
                             </x-base.dialog.title>
                             <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
                                 <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang-nama">Nama Barang</x-base.form-label>
+                                    <x-base.form-label for="barang-nama">Tanggal</x-base.form-label>
                                     <x-base.form-input
-                                        id="barang-nama"
-                                        type="text"
-                                        name="nama"
-                                        placeholder="Contoh: Indomie Goreng Ayam"
+                                        id="tanggal"
+                                        type="date"
+                                        name="tanggal"
                                     />
                                 </div>
-                                <div class="col-span-12 sm:col-span-6">
-                                    <x-base.form-label for="barang-jenis">Jenis</x-base.form-label>
-                                    <x-base.form-select id="barang-jenis" name="jenis">
-                                        @foreach ($jenis as $item)
-                                            <option value="{{ $item->id }}">{{ $item->jenis }}</option>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="barang-satuan">Suplier</x-base.form-label>
+                                    <x-base.form-select id="barang-satuan" name="satuan">
+                                        @foreach ($suplier as $item)
+                                            <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->nama }}</p></option>
                                         @endforeach
                                     </x-base.form-select>
                                 </div>
-                                <div class="col-span-12 sm:col-span-6">
-                                    <x-base.form-label for="barang-satuan">Satuan</x-base.form-label>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="barang-nama">Nama Barang</x-base.form-label>
                                     <x-base.form-select id="barang-satuan" name="satuan">
-                                        @foreach ($satuan as $item)
-                                            <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->satuan }}</p></option>
+                                        @foreach ($barang as $item)
+                                            <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->nama }}</p></option>
                                         @endforeach
                                     </x-base.form-select>
+                                </div>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="barang-nama">Jumlah</x-base.form-label>
+                                    <x-base.form-input
+                                        id="jumlah"
+                                        type="number"
+                                        name="jumlah"
+                                    />
                                 </div>
                                 <div class="col-span-12 sm:col-span-6">
                                     <x-base.form-label for="barang-harga-beli">Harga Beli</x-base.form-label>
@@ -221,29 +251,6 @@
                                         type="number"
                                         name="harga_jual"
                                         placeholder="Contoh: 75000"
-                                    />
-                                </div>
-                                <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang-foto">Foto Barang</x-base.form-label>
-                                    <x-base.form-input
-                                        id="barang-foto"
-                                        type="file"
-                                        name="foto"
-                                    />
-                                    <x-base.form-input
-                                        id="barang-stok"
-                                        type="hidden"
-                                        name="stok"
-                                    />
-                                    <x-base.form-input
-                                        id="barang-status"
-                                        type="hidden"
-                                        name="status"
-                                    />
-                                    <x-base.form-input
-                                        id="barang-barcode"
-                                        type="hidden"
-                                        name="barcode"
                                     />
                                 </div>
                             </x-base.dialog.description>
@@ -271,7 +278,52 @@
             </x-base.preview>
         </div>
     </x-base.preview-component>
-    <!-- END: Tambah Barang Modal -->
+    <!-- END: Tambah Transaksi Modal -->
+    
+    <!-- BEGIN: Edit Jenis Modal -->
+    <x-base.dialog id="edit-barang-modal">
+        <x-base.dialog.panel>
+            <form id="edit-barang-form" method="POST">
+                @csrf
+                @method('PUT')
+                <x-base.dialog.title>
+                    <h2 class="mr-auto text-base font-medium">Edit Jenis Barang</h2>
+                </x-base.dialog.title>
+
+                <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
+                    <div class="col-span-12 sm:col-span-12">
+                        <x-base.form-label for="edit-modal-form-1">Jenis Barang</x-base.form-label>
+                        <x-base.form-input
+                            id="edit-modal-form-1"
+                            type="text"
+                            name="jenis"
+                            placeholder="..."
+                            value=""
+                        />
+                    </div>
+                </x-base.dialog.description>
+
+                <x-base.dialog.footer>
+                    <x-base.button
+                        class="mr-1 w-20"
+                        data-tw-dismiss="modal"
+                        type="button"
+                        variant="outline-secondary"
+                    >
+                        Batal
+                    </x-base.button>
+                    <x-base.button
+                        class="w-20"
+                        type="submit"
+                        variant="primary"
+                    >
+                        Simpan
+                    </x-base.button>
+                </x-base.dialog.footer>
+            </form>
+        </x-base.dialog.panel>
+    </x-base.dialog>
+    <!-- END: Edit Jenis Modal -->
 
     <!-- BEGIN: Delete Confirmation Modal -->
     <x-base.dialog id="delete-confirmation-modal">

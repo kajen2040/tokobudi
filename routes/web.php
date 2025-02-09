@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\TransaksiGudang;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\BarangController;
@@ -11,6 +13,9 @@ use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\TransaksiReturController;
+use App\Http\Controllers\TransaksiGudangController;
+use App\Http\Controllers\TransaksiPenjualanController;
 
 Route::middleware(['auth', 'verified', 'role:super admin|admin|reseller'])->group(function () {
     // Route::get('/tes', [PageController::class, 'tes'])->name('tes');
@@ -111,8 +116,22 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
     Route::prefix('transaksi')
         ->name('transaksi.')
         ->group(function () {
-            Route::get('/', [BarangController::class, 'penjualan'])
+            Route::get('/gudang', [TransaksiGudangController::class, 'index'])
+                ->name('gudang');
+
+                Route::get('/penjualan', [TransaksiPenjualanController::class, 'index'])
                 ->name('penjualan');
+
+            Route::get('/retur', [TransaksiReturController::class, 'index'])
+                ->name('retur');
+        }
+    );
+
+    Route::prefix('users')
+        ->name('users.')
+        ->group(function () {
+            Route::get('/', [UserController::class, 'index'])
+                ->name('index');
         }
     );
     
