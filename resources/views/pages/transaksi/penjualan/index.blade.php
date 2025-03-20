@@ -8,14 +8,15 @@
     <h2 class="intro-y mt-10 text-lg font-medium uppercase">Transaksi Penjualan</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center xl:flex-nowrap">
-            <x-base.button
-                class="mr-2 shadow-md text-white"
-                variant="success"
-                data-tw-toggle="modal"
-                data-tw-target="#tambah-barang-modal-preview"
-            >
-                TAMBAH
-            </x-base.button>
+            <a href="{{ route('transaksi.penjualan.tambah') }}">
+                <x-base.button
+                    class="mr-2 shadow-md text-white"
+                    variant="success"
+                    type="button"
+                >
+                    TAMBAH
+                </x-base.button>
+            </a>
             <div class="mx-auto hidden text-slate-500 xl:block">
                 @if (session('success'))
                     <div class="text-green-600">{{ session('success') }}</div>

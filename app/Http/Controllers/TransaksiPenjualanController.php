@@ -17,6 +17,11 @@ class TransaksiPenjualanController extends Controller
 
         $data = Barang::with('detail')->get();
         
-        return view('pages.transaksi.penjualan', compact('jenis', 'satuan', 'data'));
+        return view('pages.transaksi.penjualan.index', compact('jenis', 'satuan', 'data'));
+    }
+
+    public function tambah()
+    {
+        return view('pages.transaksi.penjualan.tambah');
     }
 }

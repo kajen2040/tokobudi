@@ -125,6 +125,9 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::get('/penjualan', [TransaksiPenjualanController::class, 'index'])
                 ->name('penjualan');
 
+            Route::get('/penjualan/tambah', [TransaksiPenjualanController::class, 'tambah'])
+                ->name('penjualan.tambah');
+
             Route::get('/retur', [TransaksiReturController::class, 'index'])
                 ->name('retur');
         }
