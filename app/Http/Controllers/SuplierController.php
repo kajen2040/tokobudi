@@ -7,11 +7,18 @@ use Illuminate\Http\Request;
 
 class SuplierController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Suplier::all();
+        $search = $request->get('search');
+        
+        $data = Suplier::when($search, function($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('no_hp', 'like', "%{$search}%")
+                    ->orWhere('alamat', 'like', "%{$search}%");
+            })
+            ->paginate(10);
 
-        return view('pages/suplier/index', compact('data'));
+        return view('pages/suplier/index', compact('data', 'search'));
     }
 
     public function store(Request $request)

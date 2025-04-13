@@ -22,17 +22,21 @@
                 @endif
             </div>
             <div class="mt-3 flex w-full items-center xl:mt-0 xl:w-auto">
-                <div class="relative w-56 text-slate-500">
+                <form action="{{ route('barang.diskon') }}" method="GET" class="relative w-56 text-slate-500">
                     <x-base.form-input
                         class="!box w-56 pr-10"
                         type="text"
+                        name="search"
                         placeholder="Cari..."
+                        value="{{ $search ?? '' }}"
                     />
-                    <x-base.lucide
-                        class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4"
-                        icon="Search"
-                    />
-                </div>
+                    <button type="submit" class="absolute inset-y-0 right-0 my-auto mr-3">
+                        <x-base.lucide
+                            class="h-4 w-4"
+                            icon="Search"
+                        />
+                    </button>
+                </form>
             </div>
         </div>
         <!-- BEGIN: Data List -->
@@ -118,36 +122,61 @@
         <!-- BEGIN: Pagination -->
         <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">
             <x-base.pagination class="w-full sm:mr-auto sm:w-auto">
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronsLeft"
-                    />
-                </x-base.pagination.link>
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronLeft"
-                    />
-                </x-base.pagination.link>
-                <x-base.pagination.link>...</x-base.pagination.link>
-                <x-base.pagination.link active>1</x-base.pagination.link>
-                {{-- <x-base.pagination.link>2</x-base.pagination.link>
-                <x-base.pagination.link>3</x-base.pagination.link> --}}
-                <x-base.pagination.link>...</x-base.pagination.link>
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronRight"
-                    />
-                </x-base.pagination.link>
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronsRight"
-                    />
-                </x-base.pagination.link>
+                @if ($data->onFirstPage())
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsLeft" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronLeft" />
+                    </x-base.pagination.link>
+                @else
+                    <x-base.pagination.link href="{{ $data->url(1) }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsLeft" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link href="{{ $data->previousPageUrl() }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronLeft" />
+                    </x-base.pagination.link>
+                @endif
+
+                @php
+                    $start = max(1, $data->currentPage() - 2);
+                    $end = min($start + 4, $data->lastPage());
+                    $start = max(1, $end - 4);
+                @endphp
+
+                @if ($start > 1)
+                    <x-base.pagination.link>...</x-base.pagination.link>
+                @endif
+
+                @for ($i = $start; $i <= $end; $i++)
+                    <x-base.pagination.link href="{{ $data->url($i) }}" :active="$i == $data->currentPage()">
+                        {{ $i }}
+                    </x-base.pagination.link>
+                @endfor
+
+                @if ($end < $data->lastPage())
+                    <x-base.pagination.link>...</x-base.pagination.link>
+                @endif
+
+                @if ($data->hasMorePages())
+                    <x-base.pagination.link href="{{ $data->nextPageUrl() }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronRight" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link href="{{ $data->url($data->lastPage()) }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsRight" />
+                    </x-base.pagination.link>
+                @else
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronRight" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsRight" />
+                    </x-base.pagination.link>
+                @endif
             </x-base.pagination>
+            <div class="text-sm text-slate-500 ml-5">
+                Showing {{ $data->firstItem() ?? 0 }} to {{ $data->lastItem() ?? 0 }} of {{ $data->total() }} entries
+            </div>
         </div>
         <!-- END: Pagination -->
     </div>

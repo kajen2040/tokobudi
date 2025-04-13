@@ -7,11 +7,16 @@ use Illuminate\Http\Request;
 
 class JenisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Jenis::all();
+        $search = $request->get('search');
+        
+        $data = Jenis::when($search, function($query, $search) {
+                return $query->where('jenis', 'like', "%{$search}%");
+            })
+            ->paginate(10);
 
-        return view('pages/barang/jenis', compact('data'));
+        return view('pages/barang/jenis', compact('data', 'search'));
     }
 
     public function store(Request $request)

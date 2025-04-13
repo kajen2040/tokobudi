@@ -7,11 +7,16 @@ use Illuminate\Http\Request;
 
 class DiskonController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Diskon::all();
+        $search = $request->get('search');
+        
+        $data = Diskon::when($search, function($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%");
+            })
+            ->paginate(10);
 
-        return view('pages/barang/diskon', compact('data'));
+        return view('pages/barang/diskon', compact('data', 'search'));
     }
 
     public function store(Request $request)
@@ -31,8 +36,8 @@ class DiskonController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'persen' => 'required|number|max:255',
-            'status' => 'required|string|max:255',
+            'persen' => 'required|integer|max:100',
+            'status' => 'required|integer|max:1',
         ]);
 
         $diskon = Diskon::findOrFail($id);

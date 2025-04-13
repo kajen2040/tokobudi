@@ -7,11 +7,16 @@ use Illuminate\Http\Request;
 
 class SatuanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Satuan::all();
+        $search = $request->get('search');
+        
+        $data = Satuan::when($search, function($query, $search) {
+                return $query->where('satuan', 'like', "%{$search}%");
+            })
+            ->paginate(10);
 
-        return view('pages/barang/satuan', compact('data'));
+        return view('pages/barang/satuan', compact('data', 'search'));
     }
 
     public function store(Request $request)

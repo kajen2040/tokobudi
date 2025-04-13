@@ -9,16 +9,19 @@ use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $jenis = Jenis::all();
         $satuan = Satuan::all();
+        $search = $request->get('search');
 
         $data = Barang::with('detail')
-                        // ->with('jenis')
-                        // ->with('satuan')
-                        ->get();
-        return view('pages.barang.index', compact('jenis', 'satuan', 'data'));
+                      ->when($search, function($query, $search) {
+                          return $query->where('nama', 'like', "%{$search}%");
+                      })
+                      ->paginate(10);
+                      
+        return view('pages.barang.index', compact('jenis', 'satuan', 'data', 'search'));
     }
 
     public function store(Request $request)
