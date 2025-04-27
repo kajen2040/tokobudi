@@ -13,6 +13,10 @@ class TransaksiRetur extends Model
 
     protected $fillable = ['user_id', 'barang_id', 'diskon_id', 'pelanggan_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
 
+    protected $casts = [
+        'tgl_transaksi' => 'datetime',
+    ];
+
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barang_id', 'id');

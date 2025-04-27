@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pelanggan_id')->references('id')->on('pelanggan')->constrained('pelanggan', 'id');
             $table->foreignId('barang_id')->references('id')->on('barang')->constrained('barang', 'id');
-            $table->foreignId('diskon_id')->references('id')->on('diskon')->constrained('diskon', 'id');
+            $table->foreignId('diskon_id')->nullable()->references('id')->on('diskon')->constrained('diskon', 'id');
             $table->foreignId('user_id')->references('id')->on('users')->constrained('users', 'id');
             
             $table->date('tgl_transaksi');
             $table->integer('jml_barang');
-            $table->integer('total');
+            $table->integer('total')->nullable();
             $table->string('keterangan')->nullable();
 
             $table->timestamps();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pasar_transaksi_penjualan');
+        Schema::dropIfExists('transaksi_retur');
     }
 };

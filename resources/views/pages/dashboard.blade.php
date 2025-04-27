@@ -39,7 +39,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-6 text-3xl font-medium leading-8">{{ $itemTypesCount }}</div>
-                                    <div class="mt-1 text-base text-slate-500">Jumlah Jenis Barang</div>
+                                    <div class="mt-1 text-base text-slate-500">Jenis Barang</div>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-6 text-3xl font-medium leading-8">{{ $totalStock }}</div>
-                                    <div class="mt-1 text-base text-slate-500">Total Stok Barang</div>
+                                    <div class="mt-1 text-base text-slate-500">Stok Barang</div>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                                     </div>
                                     <div class="mt-6 text-3xl font-medium leading-8">{{ $totalSales }}</div>
                                     <div class="mt-1 text-base text-slate-500">
-                                        Penjualan
+                                        Total Penjualan
                                     </div>
                                 </div>
                             </div>
@@ -100,9 +100,9 @@
                                             
                                         </div>
                                     </div>
-                                    <div class="mt-6 text-3xl font-medium leading-8">3</div>
+                                    <div class="mt-6 text-3xl font-medium leading-8">{{ $totalRetur }}</div>
                                     <div class="mt-1 text-base text-slate-500">
-                                        Retur
+                                        Total Retur
                                     </div>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 @extends('../../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Transaksi Gudang</title>
+    <title>Transaksi Retur Penjualan</title>
 @endsection
 
 @section('subcontent')
@@ -12,13 +12,16 @@
                 class="mr-2 shadow-md text-white"
                 variant="success"
                 data-tw-toggle="modal"
-                data-tw-target="#tambah-barang-modal-preview"
+                data-tw-target="#tambah-retur-modal"
             >
                 TAMBAH
             </x-base.button>
             <div class="mx-auto hidden text-slate-500 xl:block">
                 @if (session('success'))
                     <div class="text-green-600">{{ session('success') }}</div>
+                @endif
+                @if (session('error'))
+                    <div class="text-red-600">{{ session('error') }}</div>
                 @endif
             </div>
             <div class="mt-3 flex w-full items-center xl:mt-0 xl:w-auto">
@@ -57,10 +60,7 @@
                             Jumlah
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Satuan
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Jenis
+                            Keterangan
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Tindakan
@@ -68,38 +68,32 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    
-                    @foreach ($data as $barang)
+                    @foreach ($data as $retur)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ date('d/m/Y') }}
+                                {{ $retur->tgl_transaksi->format('d/m/Y') }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Pelanggan
+                                {{ $retur->pelanggan->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->nama }}
+                                {{ $retur->barang->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->stok }}
+                                {{ $retur->jml_barang }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->detail->satuan->satuan ?? 'N/A' }}
-                            </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $barang->detail->jenis->jenis ?? 'N/A' }}
+                                {{ $retur->keterangan }}
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
@@ -110,7 +104,7 @@
                                         class="mr-3 flex items-center"
                                         href="#"
                                         data-tw-toggle="modal"
-                                        data-tw-target="#edit-barang-modal"
+                                        data-tw-target="#edit-retur-modal-{{ $retur->id }}"
                                     >
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
@@ -120,18 +114,141 @@
                                     </a>
                                     <a
                                         class="flex items-center text-danger"
-                                        data-tw-toggle="modal"
-                                        data-tw-target="#delete-confirmation-modal"
                                         href="#"
+                                        data-tw-toggle="modal"
+                                        data-tw-target="#delete-retur-modal-{{ $retur->id }}"
                                     >
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
                                             icon="Trash"
-                                        /> Delete
+                                        />
+                                        Hapus
                                     </a>
                                 </div>
                             </x-base.table.td>
                         </x-base.table.tr>
+
+                        <!-- BEGIN: Edit Retur Modal -->
+                        <x-base.dialog id="edit-retur-modal-{{ $retur->id }}">
+                            <x-base.dialog.panel>
+                                <form action="{{ route('transaksi.retur.update', $retur->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <x-base.dialog.title>
+                                        <h2 class="mr-auto text-base font-medium">
+                                            Edit Retur Penjualan
+                                        </h2>
+                                    </x-base.dialog.title>
+                               
+                                    <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
+                                        <div class="col-span-12">
+                                            <x-base.form-label for="edit-pelanggan-{{ $retur->id }}">Pelanggan</x-base.form-label>
+                                            <select name="pelanggan_id" id="edit-pelanggan-{{ $retur->id }}" class="form-select w-full">
+                                                <option value="">Pilih Pelanggan</option>
+                                                @foreach(\App\Models\Pelanggan::all() as $pelanggan)
+                                                    <option value="{{ $pelanggan->id }}" {{ $retur->pelanggan_id == $pelanggan->id ? 'selected' : '' }}>{{ $pelanggan->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-span-12">
+                                            <x-base.form-label for="edit-barang-{{ $retur->id }}">Barang</x-base.form-label>
+                                            <select name="barang_id" id="edit-barang-{{ $retur->id }}" class="form-select w-full">
+                                                <option value="">Pilih Barang</option>
+                                                @foreach(\App\Models\Barang::all() as $barang)
+                                                    <option value="{{ $barang->id }}" {{ $retur->barang_id == $barang->id ? 'selected' : '' }}>{{ $barang->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-span-12">
+                                            <x-base.form-label for="edit-diskon-{{ $retur->id }}">Diskon</x-base.form-label>
+                                            <select name="diskon_id" id="edit-diskon-{{ $retur->id }}" class="form-select w-full">
+                                                <option value="">Pilih Diskon (Opsional)</option>
+                                                @foreach(\App\Models\Diskon::all() as $diskon)
+                                                    <option value="{{ $diskon->id }}" {{ $retur->diskon_id == $diskon->id ? 'selected' : '' }}>{{ $diskon->nama }} ({{ $diskon->persen }}%)</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-span-12">
+                                            <x-base.form-label for="edit-jml_barang-{{ $retur->id }}">Jumlah Barang</x-base.form-label>
+                                            <x-base.form-input
+                                                id="edit-jml_barang-{{ $retur->id }}"
+                                                type="number"
+                                                name="jml_barang"
+                                                placeholder="Masukkan jumlah barang"
+                                                min="1"
+                                                value="{{ $retur->jml_barang }}"
+                                            />
+                                        </div>
+                                        <div class="col-span-12">
+                                            <x-base.form-label for="edit-keterangan-{{ $retur->id }}">Keterangan</x-base.form-label>
+                                            <x-base.form-textarea
+                                                id="edit-keterangan-{{ $retur->id }}"
+                                                name="keterangan"
+                                                placeholder="Masukkan keterangan retur"
+                                            >{{ $retur->keterangan }}</x-base.form-textarea>
+                                        </div>
+                                    </x-base.dialog.description>
+
+                                    <x-base.dialog.footer>
+                                        <x-base.button
+                                            class="mr-1 w-20"
+                                            data-tw-dismiss="modal"
+                                            type="button"
+                                            variant="outline-secondary"
+                                        >
+                                            Batal
+                                        </x-base.button>
+                                        <x-base.button
+                                            class="w-20"
+                                            type="submit"
+                                            variant="primary"
+                                        >
+                                            Simpan
+                                        </x-base.button>
+                                    </x-base.dialog.footer>
+                                </form>
+                            </x-base.dialog.panel>
+                        </x-base.dialog>
+                        <!-- END: Edit Retur Modal -->
+
+                        <!-- BEGIN: Delete Confirmation Modal -->
+                        <x-base.dialog id="delete-retur-modal-{{ $retur->id }}">
+                            <x-base.dialog.panel>
+                                <div class="p-5 text-center">
+                                    <x-base.lucide
+                                        class="mx-auto mt-3 h-16 w-16 text-danger"
+                                        icon="XCircle"
+                                    />
+                                    <div class="mt-5 text-3xl">Apakah Anda yakin?</div>
+                                    <div class="mt-2 text-slate-500">
+                                        Data retur akan dihapus secara permanen dan <br />
+                                        tidak bisa dikembalikan lagi.
+                                    </div>
+                                </div>
+                                <div class="px-5 pb-8 text-center">
+                                    <form action="{{ route('transaksi.retur.destroy', $retur->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-base.button
+                                            class="mr-1 w-24"
+                                            data-tw-dismiss="modal"
+                                            type="button"
+                                            variant="outline-secondary"
+                                        >
+                                            Batal
+                                        </x-base.button>
+                                        <x-base.button
+                                            class="w-24"
+                                            type="submit"
+                                            variant="danger"
+                                        >
+                                            Hapus
+                                        </x-base.button>
+                                    </form>
+                                </div>
+                            </x-base.dialog.panel>
+                        </x-base.dialog>
+                        <!-- END: Delete Confirmation Modal -->
                     @endforeach
                 </x-base.table.tbody>
             </x-base.table>
@@ -139,138 +256,66 @@
         <!-- END: Data List -->
         <!-- BEGIN: Pagination -->
         <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">
-            <x-base.pagination class="w-full sm:mr-auto sm:w-auto">
-                @if ($data->onFirstPage())
-                    <x-base.pagination.link disabled>
-                        <x-base.lucide class="h-4 w-4" icon="ChevronsLeft" />
-                    </x-base.pagination.link>
-                    <x-base.pagination.link disabled>
-                        <x-base.lucide class="h-4 w-4" icon="ChevronLeft" />
-                    </x-base.pagination.link>
-                @else
-                    <x-base.pagination.link href="{{ $data->url(1) }}">
-                        <x-base.lucide class="h-4 w-4" icon="ChevronsLeft" />
-                    </x-base.pagination.link>
-                    <x-base.pagination.link href="{{ $data->previousPageUrl() }}">
-                        <x-base.lucide class="h-4 w-4" icon="ChevronLeft" />
-                    </x-base.pagination.link>
-                @endif
-
-                @php
-                    $start = max(1, $data->currentPage() - 2);
-                    $end = min($start + 4, $data->lastPage());
-                    $start = max(1, $end - 4);
-                @endphp
-
-                @if ($start > 1)
-                    <x-base.pagination.link>...</x-base.pagination.link>
-                @endif
-
-                @for ($i = $start; $i <= $end; $i++)
-                    <x-base.pagination.link href="{{ $data->url($i) }}" :active="$i == $data->currentPage()">
-                        {{ $i }}
-                    </x-base.pagination.link>
-                @endfor
-
-                @if ($end < $data->lastPage())
-                    <x-base.pagination.link>...</x-base.pagination.link>
-                @endif
-
-                @if ($data->hasMorePages())
-                    <x-base.pagination.link href="{{ $data->nextPageUrl() }}">
-                        <x-base.lucide class="h-4 w-4" icon="ChevronRight" />
-                    </x-base.pagination.link>
-                    <x-base.pagination.link href="{{ $data->url($data->lastPage()) }}">
-                        <x-base.lucide class="h-4 w-4" icon="ChevronsRight" />
-                    </x-base.pagination.link>
-                @else
-                    <x-base.pagination.link disabled>
-                        <x-base.lucide class="h-4 w-4" icon="ChevronRight" />
-                    </x-base.pagination.link>
-                    <x-base.pagination.link disabled>
-                        <x-base.lucide class="h-4 w-4" icon="ChevronsRight" />
-                    </x-base.pagination.link>
-                @endif
-            </x-base.pagination>
-            <div class="text-sm text-slate-500 ml-5">
-                Showing {{ $data->firstItem() ?? 0 }} to {{ $data->lastItem() ?? 0 }} of {{ $data->total() }} entries
-            </div>
+            {{ $data->links() }}
         </div>
         <!-- END: Pagination -->
     </div>
 
-    <!-- BEGIN: Tambah Jenis Modal -->
-    <x-base.preview-component class="intro-y">
-        <div class="p-5">
-            <x-base.preview>
-                <!-- BEGIN: Modal Content -->
-                <x-base.dialog id="tambah-barang-modal-preview">
-                    <x-base.dialog.panel>
-                        <form action="{{ route('barang.jenis.store') }}" method="POST">
-                            @csrf
-                            <x-base.dialog.title>
-                                <h2 class="mr-auto text-base font-medium">
-                                    Tambah Jenis Barang
-                                </h2>
-                            </x-base.dialog.title>
-                       
-                            <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                                <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="modal-form-1">Jenis Barang</x-base.form-label>
-                                    <x-base.form-input
-                                        id="modal-form-1"
-                                        type="text"
-                                        name="jenis"
-                                        placeholder="..."
-                                    />
-                                </div>
-                            </x-base.dialog.description>
-
-                            <x-base.dialog.footer>
-                                <x-base.button
-                                    class="mr-1 w-20"
-                                    data-tw-dismiss="modal"
-                                    type="button"
-                                    variant="outline-secondary"
-                                >
-                                    Batal
-                                </x-base.button>
-                                <x-base.button
-                                    class="w-20"
-                                    type="submit"
-                                    variant="primary"
-                                >
-                                    Simpan
-                                </x-base.button>
-                            </x-base.dialog.footer>
-                        </form>
-                    </x-base.dialog.panel>
-                </x-base.dialog>
-                <!-- END: Modal Content -->
-            </x-base.preview>
-        </div>
-    </x-base.preview-component>
-    <!-- END: Tambah Jenis Modal -->
-    
-    <!-- BEGIN: Edit Jenis Modal -->
-    <x-base.dialog id="edit-barang-modal">
+    <!-- BEGIN: Tambah Retur Modal -->
+    <x-base.dialog id="tambah-retur-modal">
         <x-base.dialog.panel>
-            <form id="edit-barang-form" method="POST">
+            <form action="{{ route('transaksi.retur.store') }}" method="POST">
                 @csrf
-                @method('PUT')
                 <x-base.dialog.title>
-                    <h2 class="mr-auto text-base font-medium">Edit Jenis Barang</h2>
+                    <h2 class="mr-auto text-base font-medium">
+                        Tambah Retur Penjualan
+                    </h2>
                 </x-base.dialog.title>
-
+           
                 <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                    <div class="col-span-12 sm:col-span-12">
-                        <x-base.form-label for="edit-modal-form-1">Jenis Barang</x-base.form-label>
+                    <div class="col-span-12">
+                        <x-base.form-label for="pelanggan">Pelanggan</x-base.form-label>
+                        <select name="pelanggan_id" id="pelanggan" class="form-select w-full">
+                            <option value="">Pilih Pelanggan</option>
+                            @foreach(\App\Models\Pelanggan::all() as $pelanggan)
+                                <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-span-12">
+                        <x-base.form-label for="barang">Barang</x-base.form-label>
+                        <select name="barang_id" id="barang" class="form-select w-full">
+                            <option value="">Pilih Barang</option>
+                            @foreach(\App\Models\Barang::all() as $barang)
+                                <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-span-12">
+                        <x-base.form-label for="diskon">Diskon</x-base.form-label>
+                        <select name="diskon_id" id="diskon" class="form-select w-full">
+                            <option value="">Pilih Diskon (Opsional)</option>
+                            @foreach(\App\Models\Diskon::all() as $diskon)
+                                <option value="{{ $diskon->id }}">{{ $diskon->nama }} ({{ $diskon->persen }}%)</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-span-12">
+                        <x-base.form-label for="jml_barang">Jumlah Barang</x-base.form-label>
                         <x-base.form-input
-                            id="edit-modal-form-1"
-                            type="text"
-                            name="jenis"
-                            placeholder="..."
-                            value=""
+                            id="jml_barang"
+                            type="number"
+                            name="jml_barang"
+                            placeholder="Masukkan jumlah barang"
+                            min="1"
+                        />
+                    </div>
+                    <div class="col-span-12">
+                        <x-base.form-label for="keterangan">Keterangan</x-base.form-label>
+                        <x-base.form-textarea
+                            id="keterangan"
+                            name="keterangan"
+                            placeholder="Masukkan keterangan retur"
                         />
                     </div>
                 </x-base.dialog.description>
@@ -295,56 +340,5 @@
             </form>
         </x-base.dialog.panel>
     </x-base.dialog>
-    <!-- END: Edit Jenis Modal -->
-
-    <!-- BEGIN: Delete Confirmation Modal -->
-    <x-base.dialog id="delete-confirmation-modal">
-        <x-base.dialog.panel>
-            <div class="p-5 text-center">
-                <x-base.lucide
-                    class="mx-auto mt-3 h-16 w-16 text-danger"
-                    icon="XCircle"
-                />
-                <div class="mt-5 text-3xl">Apakah Anda yakin?</div>
-                <div class="mt-2 text-slate-500">
-                    Data akan dihapus secara permanen dan <br />
-                    tidak bisa dikembalikan lagi.
-                </div>
-            </div>
-            <div class="px-5 pb-8 text-center">
-                <form id="delete-barang-form" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <x-base.button
-                        class="mr-1 w-24"
-                        data-tw-dismiss="modal"
-                        type="button"
-                        variant="outline-secondary"
-                    >
-                        Cancel
-                    </x-base.button>
-                    <x-base.button
-                        class="w-24"
-                        type="submit"
-                        variant="danger"
-                    >
-                        Delete
-                    </x-base.button>
-                </form>
-            </div>
-        </x-base.dialog.panel>
-    </x-base.dialog>
-    <!-- END: Delete Confirmation Modal -->
+    <!-- END: Tambah Retur Modal -->
 @endsection
-
-<script>
-    function openEditModal(url, jenis) {
-        document.getElementById('edit-barang-form').action = url;
-        document.getElementById('edit-modal-form-1').value = jenis;
-    }
-
-    function openDeleteModal(url) {
-        const deleteForm = document.getElementById('delete-barang-form');
-        deleteForm.action = url;
-    }
-</script>

@@ -140,6 +140,15 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
 
             Route::get('/retur', [TransaksiReturController::class, 'index'])
                 ->name('retur');
+
+            Route::post('/retur', [TransaksiReturController::class, 'store'])
+                ->name('retur.store');
+
+            Route::put('/retur/{id}', [TransaksiReturController::class, 'update'])
+                ->name('retur.update');
+
+            Route::delete('/retur/{id}', [TransaksiReturController::class, 'destroy'])
+                ->name('retur.destroy');
         }
     );
 
