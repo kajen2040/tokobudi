@@ -8,4 +8,38 @@ use Illuminate\Database\Eloquent\Model;
 class TransaksiRetur extends Model
 {
     use HasFactory;
+
+    protected $table = 'transaksi_retur';
+
+    protected $fillable = ['user_id', 'barang_id', 'diskon_id', 'pelanggan_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
+
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'barang_id', 'id');
+    }
+    
+    public function barangDetail()
+    {
+        return $this->hasOneThrough(BarangDetail::class, Barang::class, 'id', 'barang_id', 'barang_id', 'id');
+    }
+
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class);
+    }
+
+    public function satuan()
+    {
+        return $this->belongsTo(Satuan::class);
+    }
+
+    public function diskon()
+    {
+        return $this->belongsTo(Diskon::class, 'diskon_id');
+    }
+
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
+    }
 }

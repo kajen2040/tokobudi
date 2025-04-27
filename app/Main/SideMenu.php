@@ -77,7 +77,7 @@ class SideMenu
             ],
             'laporan' => [
                 'icon' => 'file-text',
-                'route_name' => 'login',
+                'route_name' => 'laporan.index',
                 'title' => 'Laporan'
             ],
             'users' => [

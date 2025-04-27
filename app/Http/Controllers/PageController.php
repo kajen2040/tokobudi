@@ -24,9 +24,11 @@ class PageController extends Controller
      * Show specified view.
      *
      */
-    public function dashboardOverview1()
+    public function dashboard(): View
     {
-        return view('pages/dashboard-overview-1');
+        $itemTypesCount = \App\Models\Jenis::count();
+        $totalStock = \App\Models\Barang::sum('stok');
+        return view('pages/dashboard', compact('itemTypesCount', 'totalStock'));
     }
     
     /**

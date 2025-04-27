@@ -16,6 +16,7 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\TransaksiReturController;
 use App\Http\Controllers\TransaksiGudangController;
 use App\Http\Controllers\TransaksiPenjualanController;
+use App\Http\Controllers\LaporanController;
 
 Route::middleware(['auth', 'verified', 'role:super admin|admin|reseller'])->group(function () {
     // Route::get('/tes', [PageController::class, 'tes'])->name('tes');
@@ -23,7 +24,7 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin|reseller'])->grou
 
 Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(function () {
     
-    Route::get('/', [PageController::class, 'dashboardOverview1'])->name('dashboard');
+    Route::get('/', [PageController::class, 'dashboard'])->name('dashboard');
  
     Route::prefix('barang')
         ->name('barang.')
@@ -137,6 +138,24 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
         ->name('users.')
         ->group(function () {
             Route::get('/', [UserController::class, 'index'])
+                ->name('index');
+
+            Route::post('/', [UserController::class, 'store'])
+                ->name('store');
+
+            Route::put('/{user}', [UserController::class, 'update'])
+                ->name('update');
+
+            Route::delete('/{user}', [UserController::class, 'destroy'])
+                ->name('destroy');
+
+        }
+    );
+
+    Route::prefix('laporan')
+        ->name('laporan.')
+        ->group(function () {
+            Route::get('/', [LaporanController::class, 'index'])
                 ->name('index');
         }
     );

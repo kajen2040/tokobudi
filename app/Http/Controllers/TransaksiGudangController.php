@@ -13,20 +13,29 @@ use Illuminate\Support\Facades\Auth;
 
 class TransaksiGudangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $suplier = Suplier::all();
         $jenis = Jenis::all();
         $satuan = Satuan::all();
-
         $barang = Barang::with('detail')->get();
+        $search = $request->get('search');
 
-        $data = TransaksiGudang::all();
+        $data = TransaksiGudang::with(['barang', 'suplier', 'barangDetail'])
+                ->when($search, function($query, $search) {
+                    return $query->whereHas('barang', function($q) use ($search) {
+                        $q->where('nama', 'like', "%{$search}%");
+                    })->orWhereHas('suplier', function($q) use ($search) {
+                        $q->where('nama', 'like', "%{$search}%");
+                    })->orWhere('tgl_transaksi', 'like', "%{$search}%");
+                })
+                ->orderBy('tgl_transaksi', 'desc')
+                ->paginate(10);
 
         // $userId = Auth::id();
         // dd($userId);
 
-        return view('pages.transaksi.gudang', compact('data', 'suplier', 'jenis', 'satuan', 'barang'));
+        return view('pages.transaksi.gudang', compact('data', 'suplier', 'jenis', 'satuan', 'barang', 'search'));
     }
 
     public function store(Request $request)
