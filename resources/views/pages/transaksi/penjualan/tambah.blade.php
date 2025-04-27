@@ -51,9 +51,6 @@
                             </x-base.form-select>
                         </div>
                         <div id="stok-info" class="mt-2 hidden items-center text-xs">
-                            <span class="mr-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white">
-                                <i class="fas fa-info-circle text-xs"></i>
-                            </span>
                             <span class="text-primary"></span>
             </div>
         </div>

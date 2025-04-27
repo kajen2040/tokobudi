@@ -11,7 +11,7 @@ class TransaksiPenjualan extends Model
 
     protected $table = 'transaksi_penjualan';
 
-    protected $fillable = ['user_id', 'barang_id', 'diskon_id', 'pelanggan_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
+    protected $fillable = ['user_id', 'barang_id', 'diskon_id', 'pelanggan_id', 'tgl_transaksi', 'jml_barang', 'total', 'keterangan'];
 
     public function barang()
     {

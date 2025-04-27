@@ -10,6 +10,7 @@ use Database\Seeders\SatuanSeeder;
 use Database\Seeders\BarangSeeder;
 use Database\Seeders\PelangganSeeder;
 use Database\Seeders\SuplierSeeder;
+use Database\Seeders\DiskonSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,8 +30,10 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             JenisBarangSeeder::class,
             SatuanSeeder::class,
+            BarangSeeder::class,
             PelangganSeeder::class,
             SuplierSeeder::class,
+            DiskonSeeder::class,
         ]);
     }
 }

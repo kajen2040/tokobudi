@@ -11,12 +11,12 @@ class PelangganSeeder extends Seeder
     {
         $pelanggan = [
             [
-                'nama' => 'Budi Santoso',
-                'alamat' => 'Jl. Merdeka No. 10, Jakarta',
+                'nama' => 'Umum',
+                'alamat' => 'Jl. Merdeka',
                 'no_hp' => '081234567890'
             ],
             [
-                'nama' => 'Ani Wijaya',
+                'nama' => 'Budi Santoso',
                 'alamat' => 'Jl. Sudirman No. 25, Bandung',
                 'no_hp' => '081234567891'
             ],
