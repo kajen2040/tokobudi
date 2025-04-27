@@ -73,28 +73,44 @@
                 <x-base.table.tbody>
                     @foreach ($data as $transaksi)
                         <x-base.table.tr class="intro-x">
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 {{ $transaksi->tgl_transaksi->format('d/m/Y') }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 {{ $transaksi->suplier->nama }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 {{ $transaksi->barang->nama }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 {{ $transaksi->jml_barang }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 Rp {{ number_format($transaksi->harga_beli, 0, ',', '.') }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 {{ $transaksi->keterangan }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 {{ $transaksi->user->name }}
                             </x-base.table.td>
-                            <x-base.table.td>
+                            <x-base.table.td
+                                class="box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
                                 <div class="flex items-center justify-center">
                                     <a
                                         class="mr-3 flex items-center"
