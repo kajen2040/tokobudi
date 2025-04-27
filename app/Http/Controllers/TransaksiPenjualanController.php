@@ -26,7 +26,8 @@ class TransaksiPenjualanController extends Controller
                     })->orWhere('tgl_transaksi', 'like', "%{$search}%");
                 })
                 ->orderBy('tgl_transaksi', 'desc')
-                ->paginate(10);
+                ->paginate(10)
+                ->appends(['search' => $search]);
 
         // $userId = Auth::id();
         // dd($userId);

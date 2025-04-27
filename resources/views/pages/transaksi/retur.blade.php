@@ -5,7 +5,7 @@
 @endsection
 
 @section('subcontent')
-    <h2 class="intro-y mt-10 text-lg font-medium uppercase">Transaksi Retur Pelanggan</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium uppercase">Transaksi Retur Penjualan</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center xl:flex-nowrap">
             <x-base.button

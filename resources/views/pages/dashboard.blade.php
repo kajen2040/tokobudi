@@ -78,7 +78,7 @@
                                            
                                         </div>
                                     </div>
-                                    <div class="mt-6 text-3xl font-medium leading-8">49</div>
+                                    <div class="mt-6 text-3xl font-medium leading-8">{{ $totalSales }}</div>
                                     <div class="mt-1 text-base text-slate-500">
                                         Penjualan
                                     </div>
@@ -155,7 +155,35 @@
                     </div>
                 </div>
                 <!-- END: Sales Report -->
-                
+                <!-- BEGIN: Total Sales -->
+                <div class="col-span-12 mt-8">
+                    <div class="intro-y flex h-10 items-center">
+                        <h2 class="mr-5 truncate text-lg font-medium">Total Sales</h2>
+                    </div>
+                    <div class="mt-5 grid grid-cols-12 gap-6">
+                        <div class="intro-y col-span-12 sm:col-span-6 xl:col-span-3">
+                            <div @class([
+                                'relative zoom-in',
+                                "before:box before:absolute before:inset-x-3 before:mt-3 before:h-full before:bg-slate-50 before:content-['']",
+                            ])>
+                                <div class="box p-5">
+                                    <div class="flex">
+                                        <x-base.lucide
+                                            class="h-[28px] w-[28px] text-primary"
+                                            icon="ShoppingCart"
+                                        />
+                                        <div class="ml-auto">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="mt-6 text-3xl font-medium leading-8">{{ $totalSales }}</div>
+                                    <div class="mt-1 text-base text-slate-500">Total Penjualan</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END: Total Sales -->
             </div>
         </div>
         <div class="col-span-12 2xl:col-span-3">

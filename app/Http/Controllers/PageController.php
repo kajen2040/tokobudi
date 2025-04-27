@@ -28,7 +28,8 @@ class PageController extends Controller
     {
         $itemTypesCount = \App\Models\Jenis::count();
         $totalStock = \App\Models\Barang::sum('stok');
-        return view('pages/dashboard', compact('itemTypesCount', 'totalStock'));
+        $totalSales = \App\Models\TransaksiPenjualan::calculateTotalSales();
+        return view('pages/dashboard', compact('itemTypesCount', 'totalStock', 'totalSales'));
     }
     
     /**

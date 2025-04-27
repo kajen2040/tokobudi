@@ -23,17 +23,18 @@
                 @endif
             </div>
             <div class="mt-3 flex w-full items-center xl:mt-0 xl:w-auto">
-                <div class="relative w-56 text-slate-500">
+                <form action="{{ route('transaksi.penjualan') }}" method="GET" class="relative w-56 text-slate-500">
                     <x-base.form-input
                         class="!box w-56 pr-10"
                         type="text"
+                        name="search"
                         placeholder="Cari..."
+                        value="{{ $search ?? '' }}"
                     />
-                    <x-base.lucide
-                        class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4"
-                        icon="Search"
-                    />
-                </div>
+                    <button type="submit" class="absolute inset-y-0 right-0 my-auto mr-3">
+                        <x-base.lucide class="h-4 w-4" icon="Search" />
+                    </button>
+                </form>
             </div>
         </div>
         <!-- BEGIN: Data List -->
@@ -68,78 +69,55 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    
-                    {{-- @foreach ($data as $jenis) --}}
+                    @forelse ($data as $item)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                01/02/2025
+                                {{ date('d/m/Y', strtotime($item->tgl_transaksi)) }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Renaldi
+                                {{ $item->pelanggan->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Mie Goreng
+                                {{ $item->barang->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                3
+                                {{ $item->jml_barang }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Kardus
+                                {{ $item->barangDetail->satuan->satuan ?? '-' }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Mie Instan
+                                {{ $item->barangDetail->jenis->jenis ?? '-' }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                Rp 50.000,-
+                                Rp {{ number_format($item->total, 0, ',', '.') }},-
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
                                 'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
                             ])>
-                                <div class="flex items-center justify-center">
-                                    <a
-                                        class="mr-3 flex items-center"
-                                        href="#"
-                                        data-tw-toggle="modal"
-                                        data-tw-target="#edit-barang-modal"
-                                        {{-- onclick="openEditModal('{{ route('barang.jenis.update', $jenis->id) }}', '{{ $jenis->jenis }}')" --}}
-                                    >
-                                        <x-base.lucide
-                                            class="mr-1 h-4 w-4"
-                                            icon="CheckSquare"
-                                        />
-                                        Edit
-                                    </a>
-                                    <a
-                                        class="flex items-center text-danger"
-                                        data-tw-toggle="modal"
-                                        data-tw-target="#delete-confirmation-modal"
-                                        {{-- onclick="openDeleteModal('{{ route('barang.jenis.destroy', $jenis->id) }}')" --}}
-                                        href="#"
-                                    >
-                                        <x-base.lucide
-                                            class="mr-1 h-4 w-4"
-                                            icon="Trash"
-                                        /> Delete
-                                    </a>
-                                </div>
+                                {{-- No actions --}}
                             </x-base.table.td>
                         </x-base.table.tr>
-                    {{-- @endforeach --}}
+                    @empty
+                        <x-base.table.tr>
+                            <x-base.table.td colspan="8" class="text-center">Tidak ada data</x-base.table.td>
+                        </x-base.table.tr>
+                    @endforelse
                 </x-base.table.tbody>
             </x-base.table>
         </div>
@@ -147,36 +125,61 @@
         <!-- BEGIN: Pagination -->
         <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">
             <x-base.pagination class="w-full sm:mr-auto sm:w-auto">
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronsLeft"
-                    />
-                </x-base.pagination.link>
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronLeft"
-                    />
-                </x-base.pagination.link>
-                <x-base.pagination.link>...</x-base.pagination.link>
-                <x-base.pagination.link active>1</x-base.pagination.link>
-                {{-- <x-base.pagination.link>2</x-base.pagination.link>
-                <x-base.pagination.link>3</x-base.pagination.link> --}}
-                <x-base.pagination.link>...</x-base.pagination.link>
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronRight"
-                    />
-                </x-base.pagination.link>
-                <x-base.pagination.link>
-                    <x-base.lucide
-                        class="h-4 w-4"
-                        icon="ChevronsRight"
-                    />
-                </x-base.pagination.link>
+                @if ($data->onFirstPage())
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsLeft" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronLeft" />
+                    </x-base.pagination.link>
+                @else
+                    <x-base.pagination.link href="{{ $data->url(1) }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsLeft" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link href="{{ $data->previousPageUrl() }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronLeft" />
+                    </x-base.pagination.link>
+                @endif
+
+                @php
+                    $start = max(1, $data->currentPage() - 2);
+                    $end = min($start + 4, $data->lastPage());
+                    $start = max(1, $end - 4);
+                @endphp
+
+                @if ($start > 1)
+                    <x-base.pagination.link>...</x-base.pagination.link>
+                @endif
+
+                @for ($i = $start; $i <= $end; $i++)
+                    <x-base.pagination.link href="{{ $data->url($i) }}" :active="$i == $data->currentPage()">
+                        {{ $i }}
+                    </x-base.pagination.link>
+                @endfor
+
+                @if ($end < $data->lastPage())
+                    <x-base.pagination.link>...</x-base.pagination.link>
+                @endif
+
+                @if ($data->hasMorePages())
+                    <x-base.pagination.link href="{{ $data->nextPageUrl() }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronRight" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link href="{{ $data->url($data->lastPage()) }}">
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsRight" />
+                    </x-base.pagination.link>
+                @else
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronRight" />
+                    </x-base.pagination.link>
+                    <x-base.pagination.link disabled>
+                        <x-base.lucide class="h-4 w-4" icon="ChevronsRight" />
+                    </x-base.pagination.link>
+                @endif
             </x-base.pagination>
+            <div class="text-sm text-slate-500 ml-5">
+                Showing {{ $data->firstItem() ?? 0 }} to {{ $data->lastItem() ?? 0 }} of {{ $data->total() }} entries
+            </div>
         </div>
         <!-- END: Pagination -->
     </div>

@@ -42,4 +42,9 @@ class TransaksiPenjualan extends Model
     {
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
     }
+
+    public static function calculateTotalSales()
+    {
+        return self::sum('jml_barang');
+    }
 }
