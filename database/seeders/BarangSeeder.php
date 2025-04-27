@@ -16,7 +16,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Beras Premium',
                 'foto' => 'beras.jpg',
-                'stok' => 100,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 3,
@@ -29,7 +29,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Minyak Goreng',
                 'foto' => 'minyak.jpg',
-                'stok' => 50,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 3,
@@ -42,7 +42,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Gula Pasir',
                 'foto' => 'gula.jpg',
-                'stok' => 75,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 3,
@@ -55,7 +55,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Kopi Instan',
                 'foto' => 'kopi.jpg',
-                'stok' => 200,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 2,
@@ -68,7 +68,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Teh Celup',
                 'foto' => 'teh.jpg',
-                'stok' => 30,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 2,
@@ -81,7 +81,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Sabun Mandi',
                 'foto' => 'sabun.jpg',
-                'stok' => 150,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 8,
@@ -94,7 +94,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Shampoo',
                 'foto' => 'shampoo.jpg',
-                'stok' => 100,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 8,
@@ -107,7 +107,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Pasta Gigi',
                 'foto' => 'pasta_gigi.jpg',
-                'stok' => 80,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 8,
@@ -120,7 +120,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Detergen',
                 'foto' => 'detergen.jpg',
-                'stok' => 60,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 9,
@@ -133,7 +133,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Pewangi Pakaian',
                 'foto' => 'pewangi.jpg',
-                'stok' => 40,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 9,
@@ -146,7 +146,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Buku Tulis',
                 'foto' => 'buku.jpg',
-                'stok' => 200,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 6,
@@ -159,7 +159,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Pulpen',
                 'foto' => 'pulpen.jpg',
-                'stok' => 300,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 6,
@@ -172,7 +172,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Pensil',
                 'foto' => 'pensil.jpg',
-                'stok' => 250,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 6,
@@ -185,7 +185,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Penghapus',
                 'foto' => 'penghapus.jpg',
-                'stok' => 150,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 6,
@@ -198,7 +198,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Penggaris',
                 'foto' => 'penggaris.jpg',
-                'stok' => 100,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 6,
@@ -211,7 +211,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Kertas HVS',
                 'foto' => 'kertas.jpg',
-                'stok' => 50,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 17,
@@ -224,7 +224,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Tinta Printer',
                 'foto' => 'tinta.jpg',
-                'stok' => 20,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 17,
@@ -237,7 +237,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Stapler',
                 'foto' => 'stapler.jpg',
-                'stok' => 30,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 17,
@@ -250,7 +250,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Isi Stapler',
                 'foto' => 'isi_stapler.jpg',
-                'stok' => 50,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 17,
@@ -263,7 +263,7 @@ class BarangSeeder extends Seeder
             [
                 'nama' => 'Map Plastik',
                 'foto' => 'map.jpg',
-                'stok' => 100,
+                'stok' => 0,
                 'status' => 1,
                 'detail' => [
                     'jenis_id' => 17,
