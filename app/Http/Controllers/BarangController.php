@@ -165,11 +165,36 @@ class BarangController extends Controller
 
     public function destroy($id)
     {
-        $barang = Barang::findOrFail($id);
-
-        $barang->detail()->delete();
-        $barang->delete();
-
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
+        try {
+            DB::beginTransaction();
+            
+            $barang = Barang::findOrFail($id);
+            
+            // Check if there are related records in TransaksiGudang
+            $hasTransaksi = TransaksiGudang::where('barang_id', $id)->exists();
+            
+            if ($hasTransaksi) {
+                // If there are transactions, don't delete but set status to inactive (0)
+                // $barang->update(['status' => 0]);
+                DB::commit();
+                return redirect()->route('barang.index')->with('success', 'Barang tidak dapat dihapus karena memiliki transaksi terkait..');
+            }
+            
+            // If no transactions, proceed with deletion
+            // Delete the related detail first (due to foreign key constraint)
+            if ($barang->detail) {
+                $barang->detail->delete();
+            }
+            
+            // Now delete the barang
+            $barang->delete();
+            
+            DB::commit();
+            return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('barang.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }
