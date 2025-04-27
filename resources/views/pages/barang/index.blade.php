@@ -57,6 +57,9 @@
                             Satuan
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                            Harga Jual
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Tindakan
                         </x-base.table.th>
                     </x-base.table.tr>
@@ -89,12 +92,29 @@
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->detail->jenis->jenis }}
+                                @if($barang->detail && $barang->detail->jenis)
+                                    {{ $barang->detail->jenis->jenis }}
+                                @else
+                                    -
+                                @endif
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $barang->detail->satuan->satuan }}
+                                @if($barang->detail && $barang->detail->satuan)
+                                    {{ $barang->detail->satuan->satuan }}
+                                @else
+                                    -
+                                @endif
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                @if($barang->detail)
+                                    Rp {{ number_format($barang->detail->harga_jual, 0, ',', '.') }}
+                                @else
+                                    Rp 0
+                                @endif
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
@@ -104,6 +124,18 @@
                                     <a
                                         class="mr-3 flex items-center"
                                         href="#"
+                                        data-tw-toggle="modal"
+                                        data-tw-target="#edit-barang-modal-preview"
+                                        onclick="openEditModal('{{ route('barang.update', $barang->id) }}', {
+                                            id: '{{ $barang->id }}',
+                                            nama: '{{ addslashes($barang->nama) }}',
+                                            jenis_id: '{{ optional($barang->detail)->jenis_id }}',
+                                            satuan_id: '{{ optional($barang->detail)->satuan_id }}',
+                                            harga_beli: '{{ $barang->last_purchase_price }}',
+                                            harga_jual: '{{ optional($barang->detail)->harga_jual ?? 0 }}',
+                                            foto: '{{ $barang->foto }}',
+                                            barcode: '{{ optional($barang->detail)->barcode }}'
+                                        })"
                                     >
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
@@ -209,7 +241,7 @@
                                 </h2>
                             </x-base.dialog.title>
                             <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                                <div class="col-span-12 sm:col-span-12">
+                                <div class="col-span-12">
                                     <x-base.form-label for="barang-nama">Nama Barang</x-base.form-label>
                                     <x-base.form-input
                                         id="barang-nama"
@@ -218,7 +250,7 @@
                                         placeholder="Contoh: Indomie Goreng Ayam"
                                     />
                                 </div>
-                                <div class="col-span-12 sm:col-span-6">
+                                <div class="col-span-12">
                                     <x-base.form-label for="barang-jenis">Jenis</x-base.form-label>
                                     <x-base.form-select id="barang-jenis" name="jenis">
                                         @foreach ($jenis as $item)
@@ -226,7 +258,7 @@
                                         @endforeach
                                     </x-base.form-select>
                                 </div>
-                                <div class="col-span-12 sm:col-span-6">
+                                <div class="col-span-12">
                                     <x-base.form-label for="barang-satuan">Satuan</x-base.form-label>
                                     <x-base.form-select id="barang-satuan" name="satuan">
                                         @foreach ($satuan as $item)
@@ -234,25 +266,15 @@
                                         @endforeach
                                     </x-base.form-select>
                                 </div>
-                                <div class="col-span-12 sm:col-span-6">
-                                    <x-base.form-label for="barang-harga-beli">Harga Beli</x-base.form-label>
-                                    <x-base.form-input
-                                        id="barang-harga-beli"
-                                        type="number"
-                                        name="harga_beli"
-                                        placeholder="Contoh: 50000"
-                                    />
-                                </div>
-                                <div class="col-span-12 sm:col-span-6">
-                                    <x-base.form-label for="barang-harga-jual">Harga Jual</x-base.form-label>
+                                <div class="col-span-12">
                                     <x-base.form-input
                                         id="barang-harga-jual"
-                                        type="number"
+                                        type="hidden"
                                         name="harga_jual"
-                                        placeholder="Contoh: 75000"
+                                        value="0"
                                     />
                                 </div>
-                                <div class="col-span-12 sm:col-span-12">
+                                <div class="col-span-12">
                                     <x-base.form-label for="barang-foto">Foto Barang</x-base.form-label>
                                     <x-base.form-input
                                         id="barang-foto"
@@ -302,6 +324,123 @@
     </x-base.preview-component>
     <!-- END: Tambah Barang Modal -->
 
+    <!-- BEGIN: Edit Barang Modal -->
+    <x-base.preview-component class="intro-y">
+        <div class="p-5">
+            <x-base.preview>
+                <!-- BEGIN: Modal Content -->
+                <x-base.dialog id="edit-barang-modal-preview">
+                    <x-base.dialog.panel>
+                        <form id="edit-barang-form" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="id" id="edit-barang-id">
+                            <x-base.dialog.title>
+                                <h2 class="mr-auto text-base font-medium">
+                                    Edit Barang
+                                </h2>
+                            </x-base.dialog.title>
+                            <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-nama">Nama Barang</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-barang-nama"
+                                        type="text"
+                                        name="nama"
+                                        placeholder="Contoh: Indomie Goreng Ayam"
+                                        required
+                                    />
+                                </div>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-jenis">Jenis</x-base.form-label>
+                                    <x-base.form-select id="edit-barang-jenis" name="jenis" required>
+                                        <option value="">Pilih Jenis</option>
+                                        @foreach ($jenis as $item)
+                                            <option value="{{ $item->id }}">{{ $item->jenis }}</option>
+                                        @endforeach
+                                    </x-base.form-select>
+                                </div>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-satuan">Satuan</x-base.form-label>
+                                    <x-base.form-select id="edit-barang-satuan" name="satuan" required>
+                                        <option value="">Pilih Satuan</option>
+                                        @foreach ($satuan as $item)
+                                            <option value="{{ $item->id }}">{{ $item->satuan }}</option>
+                                        @endforeach
+                                    </x-base.form-select>
+                                </div>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-harga-beli">Harga Beli (Transaksi Terakhir)</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-barang-harga-beli"
+                                        type="number"
+                                        name="harga_beli"
+                                        disabled
+                                        value="0"
+                                        class="bg-gray-100"
+                                    />
+                                </div>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-harga-jual">Harga Jual</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-barang-harga-jual"
+                                        type="number"
+                                        name="harga_jual"
+                                        placeholder="Contoh: 75000"
+                                        value="0"
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-barcode">Barcode</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-barang-barcode"
+                                        type="text"
+                                        name="barcode"
+                                        placeholder="Masukkan barcode"
+                                    />
+                                </div>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-barang-foto">Foto Barang</x-base.form-label>
+                                    <div class="mt-2">
+                                        <img id="edit-barang-foto-preview" src="" alt="Preview" class="hidden mb-2 h-32 w-32 object-cover rounded-lg">
+                                        <x-base.form-input
+                                            id="edit-barang-foto"
+                                            type="file"
+                                            name="foto"
+                                            accept="image/*"
+                                            onchange="previewEditImage(this)"
+                                        />
+                                    </div>
+                                </div>
+                            </x-base.dialog.description>
+                            <x-base.dialog.footer>
+                                <x-base.button
+                                    class="mr-1 w-20"
+                                    data-tw-dismiss="modal"
+                                    type="button"
+                                    variant="outline-secondary"
+                                >
+                                    Batal
+                                </x-base.button>
+                                <x-base.button
+                                    class="w-20 text-white"
+                                    type="submit"
+                                    variant="success"
+                                >
+                                    Simpan
+                                </x-base.button>
+                            </x-base.dialog.footer>
+                        </form>
+                    </x-base.dialog.panel>
+                </x-base.dialog>
+                <!-- END: Modal Content -->
+            </x-base.preview>
+        </div>
+    </x-base.preview-component>
+    <!-- END: Edit Barang Modal -->
+
     <!-- BEGIN: Delete Confirmation Modal -->
     <x-base.dialog id="delete-confirmation-modal">
         <x-base.dialog.panel>
@@ -340,13 +479,66 @@
         </x-base.dialog.panel>
     </x-base.dialog>
     <!-- END: Delete Confirmation Modal -->
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
 @endsection
 
 <script>
-    function openEditModal(url, jenis) {
-        document.getElementById('edit-barang-form').action = url;
-        document.getElementById('edit-modal-form-1').value = jenis;
+    function openEditModal(url, data) {
+        const form = document.getElementById('edit-barang-form');
+        form.action = url;
+        
+        // Set form values
+        document.getElementById('edit-barang-id').value = data.id;
+        document.getElementById('edit-barang-nama').value = data.nama;
+        document.getElementById('edit-barang-jenis').value = data.jenis_id || '';
+        document.getElementById('edit-barang-satuan').value = data.satuan_id || '';
+        document.getElementById('edit-barang-harga-beli').value = data.harga_beli || 0;
+        document.getElementById('edit-barang-harga-jual').value = data.harga_jual || 0;
+        document.getElementById('edit-barang-barcode').value = data.barcode || '';
+
+        // Set current photo preview
+        const fotoPreview = document.getElementById('edit-barang-foto-preview');
+        if (data.foto) {
+            fotoPreview.src = "{{ asset('storage/') }}/" + data.foto;
+            fotoPreview.classList.remove('hidden');
+        } else {
+            fotoPreview.classList.add('hidden');
+        }
+
+        // Trigger select2 update if exists
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('#edit-barang-jenis, #edit-barang-satuan').trigger('change');
+        }
     }
+
+    function previewEditImage(input) {
+        const preview = document.getElementById('edit-barang-foto-preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Reset form when modal is closed
+    document.getElementById('edit-barang-modal-preview').addEventListener('hidden.bs.modal', function () {
+        const form = document.getElementById('edit-barang-form');
+        form.reset();
+        document.getElementById('edit-barang-foto-preview').classList.add('hidden');
+        
+        // Reset select2 if exists
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('#edit-barang-jenis, #edit-barang-satuan').val('').trigger('change');
+        }
+    });
 
     function openDeleteModal(url) {
         const deleteForm = document.getElementById('delete-barang-form');
