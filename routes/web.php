@@ -120,8 +120,14 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::get('/gudang', [TransaksiGudangController::class, 'index'])
                 ->name('gudang');
 
-            Route::post('/', [TransaksiGudangController::class, 'store'])
+            Route::post('/gudang', [TransaksiGudangController::class, 'store'])
                 ->name('gudang.store');
+
+            Route::put('/gudang/{id}', [TransaksiGudangController::class, 'update'])
+                ->name('gudang.update');
+
+            Route::delete('/gudang/{id}', [TransaksiGudangController::class, 'destroy'])
+                ->name('gudang.destroy');
 
             Route::get('/penjualan', [TransaksiPenjualanController::class, 'index'])
                 ->name('penjualan');

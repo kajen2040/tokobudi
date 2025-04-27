@@ -19,7 +19,8 @@ return new class extends Migration
             
             $table->date('tgl_transaksi');
             $table->integer('jml_barang');
-            $table->string('keterangan');
+            $table->decimal('harga_beli', 12, 2);
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

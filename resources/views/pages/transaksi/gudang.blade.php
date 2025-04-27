@@ -57,16 +57,13 @@
                             Jumlah
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Satuan
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Jenis
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">
                             Harga Beli
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Harga Jual
+                            Keterangan
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            User
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Tindakan
@@ -74,60 +71,37 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    
                     @foreach ($data as $transaksi)
                         <x-base.table.tr class="intro-x">
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $transaksi->tgl_transaksi }}
+                            <x-base.table.td>
+                                {{ $transaksi->tgl_transaksi->format('d/m/Y') }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
+                            <x-base.table.td>
                                 {{ $transaksi->suplier->nama }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
+                            <x-base.table.td>
                                 {{ $transaksi->barang->nama }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
+                            <x-base.table.td>
                                 {{ $transaksi->jml_barang }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                Botol
+                            <x-base.table.td>
+                                Rp {{ number_format($transaksi->harga_beli, 0, ',', '.') }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                Air Mineral
+                            <x-base.table.td>
+                                {{ $transaksi->keterangan }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $transaksi->barangDetail->harga_beli }}
+                            <x-base.table.td>
+                                {{ $transaksi->user->name }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $transaksi->barangDetail->harga_jual }}
-                            </x-base.table.td>
-                            <x-base.table.td @class([
-                                'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
-                                'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
-                            ])>
+                            <x-base.table.td>
                                 <div class="flex items-center justify-center">
                                     <a
                                         class="mr-3 flex items-center"
                                         href="#"
                                         data-tw-toggle="modal"
-                                        data-tw-target="#edit-barang-modal"
-                                        {{-- onclick="openEditModal('{{ route('barang.jenis.update', $jenis->id) }}', '{{ $jenis->jenis }}')" --}}
+                                        data-tw-target="#edit-transaksi-modal"
+                                        onclick="openEditModal('{{ route('transaksi.gudang.update', $transaksi->id) }}', {{ json_encode($transaksi) }})"
                                     >
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
@@ -139,13 +113,14 @@
                                         class="flex items-center text-danger"
                                         data-tw-toggle="modal"
                                         data-tw-target="#delete-confirmation-modal"
-                                        {{-- onclick="openDeleteModal('{{ route('barang.jenis.destroy', $jenis->id) }}')" --}}
+                                        onclick="openDeleteModal('{{ route('transaksi.gudang.destroy', $transaksi->id) }}')"
                                         href="#"
                                     >
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
-                                            icon="Trash"
-                                        /> Delete
+                                            icon="Trash2"
+                                        />
+                                        Hapus
                                     </a>
                                 </div>
                             </x-base.table.td>
@@ -218,141 +193,236 @@
     </div>
 
     <!-- BEGIN: Tambah Transaksi Modal -->
-    <x-base.preview-component class="intro-y">
-        <div class="p-5">
-            <x-base.preview>
-                <!-- BEGIN: Modal Content -->
-                <x-base.dialog id="tambah-barang-modal-preview">
-                    <x-base.dialog.panel>
-                        <form action="{{ route('transaksi.gudang.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <x-base.dialog.title>
-                                <h2 class="mr-auto text-base font-medium">
-                                    Tambah Transaksi Gudang
-                                </h2>
-                            </x-base.dialog.title>
-                            <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                                <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang-nama">Tanggal</x-base.form-label>
-                                    <x-base.form-input
-                                        id="tanggal"
-                                        type="date"
-                                        name="tgl_transaksi"
-                                    />
-                                </div>
-                                <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="suplier">Suplier</x-base.form-label>
-                                    <x-base.form-select id="suplier" name="suplier_id">
-                                        @foreach ($suplier as $item)
-                                            <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->nama }}</p></option>
-                                        @endforeach
-                                    </x-base.form-select>
-                                </div>
-                                <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="barang">Nama Barang</x-base.form-label>
-                                    <x-base.form-select id="barang" name="barang_id">
-                                        @foreach ($barang as $item)
-                                            <option value="{{ $item->id }}"><p class="text-gray-600">{{ $item->nama }}</p></option>
-                                        @endforeach
-                                    </x-base.form-select>
-                                </div>
-                                <div class="col-span-12 sm:col-span-12">
-                                    <x-base.form-label for="jumlah">Jumlah</x-base.form-label>
-                                    <x-base.form-input
-                                        id="jumlah"
-                                        type="number"
-                                        name="jml_barang"
-                                    />
-                                </div>
-                                <div class="col-span-12 sm:col-span-6">
-                                    <x-base.form-label for="barang-harga-beli">Harga Beli</x-base.form-label>
-                                    <x-base.form-input
-                                        id="barang-harga-beli"
-                                        type="number"
-                                        name="harga_beli"
-                                        placeholder="Contoh: 50000"
-                                    />
-                                </div>
-                                <div class="col-span-12 sm:col-span-6">
-                                    <x-base.form-label for="barang-harga-jual">Harga Jual</x-base.form-label>
-                                    <x-base.form-input
-                                        id="barang-harga-jual"
-                                        type="number"
-                                        name="harga_jual"
-                                        placeholder="Contoh: 75000"
-                                    />
-                                </div>
-                            </x-base.dialog.description>
-                            <x-base.dialog.footer>
-                                <x-base.button
-                                    class="mr-1 w-20"
-                                    data-tw-dismiss="modal"
-                                    type="button"
-                                    variant="outline-secondary"
-                                >
-                                    Batal
-                                </x-base.button>
-                                <x-base.button
-                                    class="w-20 text-white"
-                                    type="submit"
-                                    variant="success"
-                                >
-                                    Simpan
-                                </x-base.button>
-                            </x-base.dialog.footer>
-                        </form>
-                    </x-base.dialog.panel>
-                </x-base.dialog>
-                <!-- END: Modal Content -->
-            </x-base.preview>
-        </div>
-    </x-base.preview-component>
-    <!-- END: Tambah Transaksi Modal -->
-    
-    <!-- BEGIN: Edit Jenis Modal -->
-    <x-base.dialog id="edit-barang-modal">
+    <x-base.dialog id="tambah-barang-modal-preview">
         <x-base.dialog.panel>
-            <form id="edit-barang-form" method="POST">
+            <form action="{{ route('transaksi.gudang.store') }}" method="POST" enctype="multipart/form-data" id="transaksiForm">
                 @csrf
-                @method('PUT')
                 <x-base.dialog.title>
-                    <h2 class="mr-auto text-base font-medium">Edit Jenis Barang</h2>
+                    <h2 class="mr-auto text-base font-medium">
+                        <i class="fas fa-plus-circle mr-2 text-success"></i>Tambah Transaksi Gudang
+                    </h2>
                 </x-base.dialog.title>
-
-                <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                    <div class="col-span-12 sm:col-span-12">
-                        <x-base.form-label for="edit-modal-form-1">Jenis Barang</x-base.form-label>
-                        <x-base.form-input
-                            id="edit-modal-form-1"
-                            type="text"
-                            name="jenis"
-                            placeholder="..."
-                            value=""
-                        />
+                <x-base.dialog.description class="space-y-4">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <x-base.form-label for="tgl_transaksi">Tanggal Transaksi</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-input
+                                    id="tgl_transaksi"
+                                    type="date"
+                                    name="tgl_transaksi"
+                                    value="{{ date('Y-m-d') }}"
+                                    class="w-full pl-2"
+                                    required
+                                />
+                                <i class="fas fa-calendar absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="suplier">Suplier</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-select id="suplier" name="suplier_id" class="w-full pl-2" required>
+                                    <option value="">Pilih Suplier</option>
+                                    @foreach ($suplier as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </x-base.form-select>
+                                <i class="fas fa-truck absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="barang">Nama Barang</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-select id="barang" name="barang_id" class="w-full pl-2" required>
+                                    <option value="">Pilih Barang</option>
+                                    @foreach ($barang as $item)
+                                        <option value="{{ $item->id }}" data-stok="{{ $item->stok }}">{{ $item->nama }} (Stok: {{ $item->stok }})</option>
+                                    @endforeach
+                                </x-base.form-select>
+                                <i class="fas fa-box absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="jml_barang">Jumlah Barang</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-input
+                                    id="jml_barang"
+                                    type="number"
+                                    name="jml_barang"
+                                    min="1"
+                                    class="w-full pl-2"
+                                    required
+                                />
+                                <i class="fas fa-cubes absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <small class="text-gray-500 mt-1 block">Stok tersedia: <span id="stok-tersedia" class="font-semibold">-</span></small>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="harga_beli">Harga Beli</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-input
+                                    id="harga_beli"
+                                    type="number"
+                                    name="harga_beli"
+                                    min="0"
+                                    class="w-full pl-2"
+                                    required
+                                />
+                                <i class="fas fa-money-bill absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="keterangan">Keterangan</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-textarea
+                                    id="keterangan"
+                                    name="keterangan"
+                                    class="w-full pl-2"
+                                    rows="3"
+                                    placeholder="Masukkan keterangan transaksi (opsional)"
+                                />
+                                <i class="fas fa-comment absolute left-3 top-4 text-gray-400"></i>
+                            </div>
+                        </div>
                     </div>
                 </x-base.dialog.description>
-
-                <x-base.dialog.footer>
+                <x-base.dialog.footer class="flex justify-end space-x-2">
                     <x-base.button
-                        class="mr-1 w-20"
+                        class="w-24"
                         data-tw-dismiss="modal"
                         type="button"
                         variant="outline-secondary"
                     >
-                        Batal
+                        <i class="fas fa-times mr-2"></i>Batal
                     </x-base.button>
                     <x-base.button
-                        class="w-20"
+                        class="w-24 text-white"
                         type="submit"
-                        variant="primary"
+                        variant="success"
                     >
-                        Simpan
+                        <i class="fas fa-save mr-2"></i>Simpan
                     </x-base.button>
                 </x-base.dialog.footer>
             </form>
         </x-base.dialog.panel>
     </x-base.dialog>
-    <!-- END: Edit Jenis Modal -->
+    <!-- END: Tambah Transaksi Modal -->
+    
+    <!-- BEGIN: Edit Transaksi Modal -->
+    <x-base.dialog id="edit-transaksi-modal">
+        <x-base.dialog.panel>
+            <form id="edit-transaksi-form" method="POST">
+                @csrf
+                @method('PUT')
+                <x-base.dialog.title>
+                    <h2 class="mr-auto text-base font-medium">
+                        <i class="fas fa-edit mr-2 text-warning"></i>Edit Transaksi Gudang
+                    </h2>
+                </x-base.dialog.title>
+                <x-base.dialog.description class="space-y-4">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <x-base.form-label for="edit-tgl_transaksi">Tanggal Transaksi</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-input
+                                    id="edit-tgl_transaksi"
+                                    type="date"
+                                    name="tgl_transaksi"
+                                    class="w-full pl-2"
+                                    required
+                                />
+                                <i class="fas fa-calendar absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="edit-suplier">Suplier</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-select id="edit-suplier" name="suplier_id" class="w-full pl-2" required>
+                                    <option value="">Pilih Suplier</option>
+                                    @foreach ($suplier as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </x-base.form-select>
+                                <i class="fas fa-truck absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="edit-barang">Nama Barang</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-select id="edit-barang" name="barang_id" class="w-full pl-2" required>
+                                    <option value="">Pilih Barang</option>
+                                    @foreach ($barang as $item)
+                                        <option value="{{ $item->id }}" data-stok="{{ $item->stok }}">{{ $item->nama }} (Stok: {{ $item->stok }})</option>
+                                    @endforeach
+                                </x-base.form-select>
+                                <i class="fas fa-box absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="edit-jml_barang">Jumlah Barang</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-input
+                                    id="edit-jml_barang"
+                                    type="number"
+                                    name="jml_barang"
+                                    min="1"
+                                    class="w-full pl-2"
+                                    required
+                                />
+                                <i class="fas fa-cubes absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <small class="text-gray-500 mt-1 block">Stok tersedia: <span id="edit-stok-tersedia" class="font-semibold">-</span></small>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="edit-harga_beli">Harga Beli</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-input
+                                    id="edit-harga_beli"
+                                    type="number"
+                                    name="harga_beli"
+                                    min="0"
+                                    class="w-full pl-2"
+                                    required
+                                />
+                                <i class="fas fa-money-bill absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <x-base.form-label for="edit-keterangan">Keterangan</x-base.form-label>
+                            <div class="relative">
+                                <x-base.form-textarea
+                                    id="edit-keterangan"
+                                    name="keterangan"
+                                    class="w-full pl-2"
+                                    rows="3"
+                                    placeholder="Masukkan keterangan transaksi (opsional)"
+                                />
+                                <i class="fas fa-comment absolute left-3 top-4 text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </x-base.dialog.description>
+                <x-base.dialog.footer class="flex justify-end space-x-2">
+                    <x-base.button
+                        class="w-24"
+                        data-tw-dismiss="modal"
+                        type="button"
+                        variant="outline-secondary"
+                    >
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </x-base.button>
+                    <x-base.button
+                        class="w-24 text-white"
+                        type="submit"
+                        variant="warning"
+                    >
+                        <i class="fas fa-save mr-2"></i>Update
+                    </x-base.button>
+                </x-base.dialog.footer>
+            </form>
+        </x-base.dialog.panel>
+    </x-base.dialog>
+    <!-- END: Edit Transaksi Modal -->
 
     <!-- BEGIN: Delete Confirmation Modal -->
     <x-base.dialog id="delete-confirmation-modal">
@@ -395,13 +465,99 @@
 @endsection
 
 <script>
-    function openEditModal(url, jenis) {
-        document.getElementById('edit-barang-form').action = url;
-        document.getElementById('edit-modal-form-1').value = jenis;
+    function openEditModal(url, transaksi) {
+        document.getElementById('edit-transaksi-form').action = url;
+        document.getElementById('edit-tgl_transaksi').value = transaksi.tgl_transaksi;
+        document.getElementById('edit-suplier').value = transaksi.suplier_id;
+        document.getElementById('edit-barang').value = transaksi.barang_id;
+        document.getElementById('edit-jml_barang').value = transaksi.jml_barang;
+        document.getElementById('edit-harga_beli').value = transaksi.harga_beli;
+        document.getElementById('edit-keterangan').value = transaksi.keterangan;
     }
 
     function openDeleteModal(url) {
-        const deleteForm = document.getElementById('delete-barang-form');
-        deleteForm.action = url;
+        document.getElementById('delete-barang-form').action = url;
     }
 </script>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 for both forms
+        $('#suplier, #barang, #edit-suplier, #edit-barang').select2({
+            theme: 'bootstrap4',
+            width: '100%'
+        });
+
+        // Update stok info when barang is selected (Add Form)
+        $('#barang').change(function() {
+            let selectedOption = $(this).find('option:selected');
+            let stok = selectedOption.data('stok');
+            $('#stok-tersedia').text(stok || '-');
+            $('#jml_barang').attr('max', stok);
+        });
+
+        // Update stok info when barang is selected (Edit Form)
+        $('#edit-barang').change(function() {
+            let selectedOption = $(this).find('option:selected');
+            let stok = selectedOption.data('stok');
+            $('#edit-stok-tersedia').text(stok || '-');
+            $('#edit-jml_barang').attr('max', stok);
+        });
+
+        // Format harga beli on input (Add Form)
+        $('#harga_beli').on('input', function() {
+            let value = $(this).val();
+            if (value) {
+                $(this).val(parseInt(value.replace(/[^\d]/g, '')));
+            }
+        });
+
+        // Format harga beli on input (Edit Form)
+        $('#edit-harga_beli').on('input', function() {
+            let value = $(this).val();
+            if (value) {
+                $(this).val(parseInt(value.replace(/[^\d]/g, '')));
+            }
+        });
+
+        // Form validation (Add Form)
+        $('#transaksiForm').on('submit', function(e) {
+            let jmlBarang = parseInt($('#jml_barang').val());
+            let stok = parseInt($('#barang option:selected').data('stok'));
+            
+            if (jmlBarang > stok) {
+                e.preventDefault();
+                alert('Jumlah barang melebihi stok yang tersedia!');
+            }
+        });
+
+        // Form validation (Edit Form)
+        $('#edit-transaksi-form').on('submit', function(e) {
+            let jmlBarang = parseInt($('#edit-jml_barang').val());
+            let stok = parseInt($('#edit-barang option:selected').data('stok'));
+            
+            if (jmlBarang > stok) {
+                e.preventDefault();
+                alert('Jumlah barang melebihi stok yang tersedia!');
+            }
+        });
+
+        // Open edit modal
+        function openEditModal(url, transaksi) {
+            $('#edit-transaksi-form').attr('action', url);
+            $('#edit-tgl_transaksi').val(transaksi.tgl_transaksi);
+            $('#edit-suplier').val(transaksi.suplier_id).trigger('change');
+            $('#edit-barang').val(transaksi.barang_id).trigger('change');
+            $('#edit-jml_barang').val(transaksi.jml_barang);
+            $('#edit-harga_beli').val(transaksi.harga_beli);
+            $('#edit-keterangan').val(transaksi.keterangan);
+            
+            // Update stok info
+            let selectedOption = $('#edit-barang').find('option:selected');
+            let stok = selectedOption.data('stok');
+            $('#edit-stok-tersedia').text(stok || '-');
+        }
+    });
+</script>
+@endpush

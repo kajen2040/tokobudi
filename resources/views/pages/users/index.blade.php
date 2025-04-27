@@ -240,6 +240,7 @@
                                         name="password"
                                         placeholder="Masukkan password"
                                         class="@error('password') border-danger @enderror mt-2"
+                                        autocomplete="off"
                                         required
                                     />
                                     @error('password')
@@ -255,6 +256,7 @@
                                         name="password_confirmation"
                                         placeholder="Konfirmasi password"
                                         class="mt-2"
+                                        autocomplete="off"
                                         required
                                     />
                                 </div>
@@ -289,75 +291,106 @@
     <!-- END: Tambah User Modal -->
     
     <!-- BEGIN: Edit User Modal -->
-    <x-base.dialog id="edit-user-modal">
-        <x-base.dialog.panel>
-            <form id="edit-user-form" method="POST">
-                @csrf
-                @method('PUT')
-                <x-base.dialog.title>
-                    <h2 class="mr-auto text-base font-medium">Edit User</h2>
-                </x-base.dialog.title>
+    <x-base.preview-component class="intro-y">
+        <div class="p-5">
+            <x-base.preview>
+                <!-- BEGIN: Modal Content -->
+                <x-base.dialog id="edit-user-modal" class="w-11/12 md:w-1/2 lg:w-1/3">
+                    <x-base.dialog.panel>
+                        <form id="edit-user-form" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <x-base.dialog.title class="border-b border-slate-200/60">
+                                <h2 class="mr-auto text-lg font-medium">
+                                    Edit User
+                                </h2>
+                            </x-base.dialog.title>
+                       
+                            <x-base.dialog.description class="p-5 grid grid-cols-12 gap-6">
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-name" class="text-base">Nama Lengkap</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-name"
+                                        type="text"
+                                        name="name"
+                                        placeholder="Masukkan nama lengkap"
+                                        class="@error('name') border-danger @enderror mt-2"
+                                        required
+                                    />
+                                    @error('name')
+                                        <div class="mt-2 text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
-                    <div class="col-span-12 sm:col-span-6">
-                        <x-base.form-label for="edit-name">Nama</x-base.form-label>
-                        <x-base.form-input
-                            id="edit-name"
-                            type="text"
-                            name="name"
-                            placeholder="Masukkan nama"
-                            required
-                        />
-                    </div>
-                    <div class="col-span-12 sm:col-span-6">
-                        <x-base.form-label for="edit-email">Email</x-base.form-label>
-                        <x-base.form-input
-                            id="edit-email"
-                            type="email"
-                            name="email"
-                            placeholder="Masukkan email"
-                            required
-                        />
-                    </div>
-                    <div class="col-span-12 sm:col-span-6">
-                        <x-base.form-label for="edit-password">Password (Kosongkan jika tidak ingin diubah)</x-base.form-label>
-                        <x-base.form-input
-                            id="edit-password"
-                            type="password"
-                            name="password"
-                            placeholder="Masukkan password baru"
-                        />
-                    </div>
-                    <div class="col-span-12 sm:col-span-6">
-                        <x-base.form-label for="edit-role">Role</x-base.form-label>
-                        <x-base.form-select id="edit-role" name="role" required>
-                            <option value="">Pilih Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </x-base.form-select>
-                    </div>
-                </x-base.dialog.description>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-email" class="text-base">Email</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-email"
+                                        type="email"
+                                        name="email"
+                                        placeholder="Masukkan email"
+                                        class="@error('email') border-danger @enderror mt-2"
+                                        required
+                                    />
+                                    @error('email')
+                                        <div class="mt-2 text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                <x-base.dialog.footer>
-                    <x-base.button
-                        class="mr-1 w-20"
-                        data-tw-dismiss="modal"
-                        type="button"
-                        variant="outline-secondary"
-                    >
-                        Batal
-                    </x-base.button>
-                    <x-base.button
-                        class="w-20"
-                        type="submit"
-                        variant="primary"
-                    >
-                        Simpan
-                    </x-base.button>
-                </x-base.dialog.footer>
-            </form>
-        </x-base.dialog.panel>
-    </x-base.dialog>
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-password" class="text-base">Password (Kosongkan jika tidak ingin diubah)</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-password"
+                                        type="password"
+                                        name="password"
+                                        placeholder="Masukkan password baru"
+                                        class="@error('password') border-danger @enderror mt-2"
+                                        autocomplete="new-password"
+                                    />
+                                    @error('password')
+                                        <div class="mt-2 text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-span-12">
+                                    <x-base.form-label for="edit-password_confirmation" class="text-base">Konfirmasi Password</x-base.form-label>
+                                    <x-base.form-input
+                                        id="edit-password_confirmation"
+                                        type="password"
+                                        name="password_confirmation"
+                                        placeholder="Konfirmasi password baru"
+                                        class="mt-2"
+                                        autocomplete="new-password"
+                                    />
+                                </div>
+                            </x-base.dialog.description>
+
+                            <x-base.dialog.footer class="border-t border-slate-200/60 p-5">
+                                <div class="flex justify-end">
+                                    <x-base.button
+                                        class="mr-2 w-24"
+                                        data-tw-dismiss="modal"
+                                        type="button"
+                                        variant="outline-secondary"
+                                    >
+                                        Batal
+                                    </x-base.button>
+                                    <x-base.button
+                                        class="w-24"
+                                        type="submit"
+                                        variant="primary"
+                                    >
+                                        Simpan
+                                    </x-base.button>
+                                </div>
+                            </x-base.dialog.footer>
+                        </form>
+                    </x-base.dialog.panel>
+                </x-base.dialog>
+                <!-- END: Modal Content -->
+            </x-base.preview>
+        </div>
+    </x-base.preview-component>
     <!-- END: Edit User Modal -->
 
     <!-- BEGIN: Delete Confirmation Modal -->
@@ -374,7 +407,7 @@
                     Proses ini tidak dapat dibatalkan.
                 </div>
             </div>
-            <div class="px-5 pb-8 text-center">
+            <div class="px-5 pb-8 flex justify-center">
                 <x-base.button
                     class="mr-1 w-24"
                     data-tw-dismiss="modal"

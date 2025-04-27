@@ -14,7 +14,21 @@ class TransaksiGudang extends Model
 
     protected $table = 'transaksi_gudang';
 
-    protected $fillable = ['user_id', 'barang_id', 'suplier_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
+    protected $fillable = [
+        'user_id', 
+        'barang_id', 
+        'suplier_id', 
+        'tgl_transaksi', 
+        'jml_barang', 
+        'harga_beli',
+        'keterangan'
+    ];
+
+    protected $casts = [
+        'tgl_transaksi' => 'date',
+        'harga_beli' => 'decimal:2',
+        'jml_barang' => 'integer'
+    ];
 
     public function barang()
     {
@@ -39,5 +53,10 @@ class TransaksiGudang extends Model
     public function suplier()
     {
         return $this->belongsTo(Suplier::class, 'suplier_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

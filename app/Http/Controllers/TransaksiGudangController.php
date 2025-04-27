@@ -21,7 +21,7 @@ class TransaksiGudangController extends Controller
         $barang = Barang::with('detail')->get();
         $search = $request->get('search');
 
-        $data = TransaksiGudang::with(['barang', 'suplier', 'barangDetail'])
+        $data = TransaksiGudang::with(['barang', 'suplier', 'barangDetail', 'user'])
                 ->when($search, function($query, $search) {
                     return $query->whereHas('barang', function($q) use ($search) {
                         $q->where('nama', 'like', "%{$search}%");
@@ -41,37 +41,38 @@ class TransaksiGudangController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'tgl_transaksi' => 'required',
-            'suplier_id' => 'required',
+            'tgl_transaksi' => 'required|date',
+            'suplier_id' => 'required|exists:suplier,id',
             'barang_id' => 'required|exists:barang,id',
             'jml_barang' => 'required|numeric|min:0',
             'harga_beli' => 'required|numeric|min:0',
-            'harga_jual' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string|max:255'
         ]);
         
         $userId = Auth::id();
-        // dd($userId);
 
-        // Gunakan transaksi database untuk memastikan integritas data
         DB::transaction(function () use ($validated, $userId) {
             // Simpan transaksi ke dalam tabel transaksi_gudang
             $gudang = TransaksiGudang::create([
                 'tgl_transaksi' => $validated['tgl_transaksi'],
-                'suplier_id' => $validated['suplier_id'] ?? 10,
+                'suplier_id' => $validated['suplier_id'],
                 'barang_id' => $validated['barang_id'],
                 'jml_barang' => $validated['jml_barang'],
+                'harga_beli' => $validated['harga_beli'],
+                'keterangan' => $validated['keterangan'] ?? '-',
                 'user_id' => $userId,
-                'keterangan' => "-",
             ]);
 
             // Ambil data barang berdasarkan barang_id
             $barang = Barang::findOrFail($validated['barang_id']);
 
-            // Update stok dengan menambah jumlah barang yang masuk
+            // Update stok
+            $stokBaru = $barang->stok + $validated['jml_barang'];
+
+            // Update stok dan harga beli
             $barang->update([
-                'stok' => $barang->stok + $validated['jml_barang'],
-                'harga_beli' => $validated['harga_beli'],
-                'harga_jual' => $validated['harga_jual'],
+                'stok' => $stokBaru,
+                'harga_beli' => $validated['harga_beli']
             ]);
         });
     
@@ -80,21 +81,58 @@ class TransaksiGudangController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'satuan' => 'required|string|max:255',
+        $transaksi = TransaksiGudang::findOrFail($id);
+        
+        $validated = $request->validate([
+            'tgl_transaksi' => 'required|date',
+            'suplier_id' => 'required|exists:suplier,id',
+            'barang_id' => 'required|exists:barang,id',
+            'jml_barang' => 'required|numeric|min:0',
+            'harga_beli' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string|max:255'
         ]);
 
-        $satuan = Satuan::findOrFail($id);
-        $satuan->update($request->all());
+        DB::transaction(function () use ($transaksi, $validated) {
+            // Simpan perubahan transaksi
+            $transaksi->update($validated);
 
-        return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+            // Update stok barang
+            $barang = Barang::findOrFail($validated['barang_id']);
+            
+            // Hitung selisih stok
+            $selisihStok = $validated['jml_barang'] - $transaksi->jml_barang;
+            
+            // Update stok
+            $stokBaru = $barang->stok + $selisihStok;
+
+            // Update stok dan harga beli
+            $barang->update([
+                'stok' => $stokBaru,
+                'harga_beli' => $validated['harga_beli']
+            ]);
+        });
+
+        return redirect()->route('transaksi.gudang')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $satuan = Satuan::findOrFail($id);
-        $satuan->delete();
+        $transaksi = TransaksiGudang::findOrFail($id);
 
-        return redirect()->back()->with('success', 'Data berhasil dihapus.');
+        DB::transaction(function () use ($transaksi) {
+            // Ambil data barang
+            $barang = Barang::findOrFail($transaksi->barang_id);
+
+            // Update stok
+            $stokBaru = $barang->stok - $transaksi->jml_barang;
+
+            // Update stok barang
+            $barang->update(['stok' => $stokBaru]);
+
+            // Hapus transaksi
+            $transaksi->delete();
+        });
+
+        return redirect()->route('transaksi.gudang')->with('success', 'Transaksi berhasil dihapus.');
     }
 }
