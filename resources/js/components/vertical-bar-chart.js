@@ -4,6 +4,16 @@
     // Chart
     if ($(".vertical-bar-chart").length) {
         const ctx = $(".vertical-bar-chart")[0].getContext("2d");
+        
+        // Get monthly sales data from a hidden input that will be added to the dashboard
+        let monthlySalesData = [];
+        if ($("#monthlySalesData").length) {
+            monthlySalesData = JSON.parse($("#monthlySalesData").val());
+        }
+        
+        // Use data from database or fallback to empty array if not available
+        const chartData = monthlySalesData.length ? monthlySalesData : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        
         const verticalBarChart = new Chart(ctx, {
             type: "bar",
             data: {
@@ -28,7 +38,7 @@
                         barThickness: 20,
                         maxBarThickness: 80,
                         minBarLength: 20,
-                        data: [0, 200, 250, 200, 500, 450, 850, 1050, 250, 200, 500, 450],
+                        data: chartData,
                         backgroundColor: () => getColor("primary"),
                     },
                     // {

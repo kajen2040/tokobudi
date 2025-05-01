@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -20,7 +21,6 @@ class UserController extends Controller
         $users = User::when($search, function($query, $search) {
                 return $query->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
-                    // ->orWhere('role', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -34,6 +34,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name',
         ], [
             'name.required' => 'Nama lengkap harus diisi',
             'name.max' => 'Nama lengkap maksimal 255 karakter',
@@ -43,6 +44,8 @@ class UserController extends Controller
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 8 karakter',
             'password.confirmed' => 'Konfirmasi password tidak sesuai',
+            'role.required' => 'Role harus dipilih',
+            'role.exists' => 'Role yang dipilih tidak valid',
         ]);
 
         if ($validator->fails()) {
@@ -57,6 +60,9 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Assign role to user
+        $user->assignRole($request->role);
+
         return redirect()->route('users.index')
             ->with('success', 'User berhasil ditambahkan');
     }
@@ -67,6 +73,16 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8',
+            'role' => 'required|exists:roles,name',
+        ], [
+            'name.required' => 'Nama lengkap harus diisi',
+            'name.max' => 'Nama lengkap maksimal 255 karakter',
+            'email.required' => 'Email harus diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah terdaftar',
+            'password.min' => 'Password minimal 8 karakter',
+            'role.required' => 'Role harus dipilih',
+            'role.exists' => 'Role yang dipilih tidak valid',
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +101,9 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        // Sync roles
+        $user->syncRoles($request->role);
 
         return redirect()->route('users.index')
             ->with('success', 'User berhasil diperbarui');

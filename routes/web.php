@@ -18,12 +18,8 @@ use App\Http\Controllers\TransaksiGudangController;
 use App\Http\Controllers\TransaksiPenjualanController;
 use App\Http\Controllers\LaporanController;
 
-Route::middleware(['auth', 'verified', 'role:super admin|admin|reseller'])->group(function () {
-    // Route::get('/tes', [PageController::class, 'tes'])->name('tes');
-});
-
-Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(function () {
-    
+// Routes accessible by both kasir and admin
+Route::middleware(['auth', 'verified', 'role:kasir|admin'])->group(function () {
     Route::get('/', [PageController::class, 'dashboard'])->name('dashboard');
  
     Route::prefix('barang')
@@ -32,6 +28,43 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::get('/', [BarangController::class, 'index'])
                 ->name('index');
 
+            Route::get('jenis', [JenisController::class, 'index'])
+                ->name('jenis');
+
+            Route::get('satuan', [SatuanController::class, 'index'])
+                ->name('satuan');
+
+            Route::get('diskon', [DiskonController::class, 'index'])
+                ->name('diskon');
+        }
+    );
+
+    Route::prefix('transaksi')
+        ->name('transaksi.')
+        ->group(function () {
+            Route::get('/gudang', [TransaksiGudangController::class, 'index'])
+                ->name('gudang');
+
+            Route::get('/penjualan', [TransaksiPenjualanController::class, 'index'])
+                ->name('penjualan');
+
+            Route::get('/penjualan/tambah', [TransaksiPenjualanController::class, 'tambah'])
+                ->name('penjualan.tambah');
+            
+            Route::post('/penjualan', [TransaksiPenjualanController::class, 'store'])
+                ->name('penjualan.store');
+
+            Route::get('/retur', [TransaksiReturController::class, 'index'])
+                ->name('retur');
+        }
+    );
+});
+
+// Routes accessible only by admin
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::prefix('barang')
+        ->name('barang.')
+        ->group(function () {
             Route::post('/', [BarangController::class, 'store'])
                 ->name('store');
 
@@ -40,9 +73,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
                 
             Route::delete('/{id}', [BarangController::class, 'destroy'])
                 ->name('destroy');
-
-            Route::get('jenis', [JenisController::class, 'index'])
-                ->name('jenis');
 
             Route::post('jenis', [JenisController::class, 'store'])
                 ->name('jenis.store');
@@ -53,9 +83,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::delete('jenis/{id}', [JenisController::class, 'destroy'])
                 ->name('jenis.destroy');
 
-            Route::get('satuan', [SatuanController::class, 'index'])
-                ->name('satuan');
-
             Route::post('satuan', [SatuanController::class, 'store'])
                 ->name('satuan.store');
 
@@ -65,9 +92,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
             Route::delete('satuan/{id}', [SatuanController::class, 'destroy'])
                 ->name('satuan.destroy');
 
-            Route::get('diskon', [DiskonController::class, 'index'])
-                ->name('diskon');
-
             Route::post('diskon', [DiskonController::class, 'store'])
                 ->name('diskon.store');
 
@@ -76,7 +100,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
                 
             Route::delete('diskon/{id}', [DiskonController::class, 'destroy'])
                 ->name('diskon.destroy');
-
         }
     );
 
@@ -117,9 +140,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
     Route::prefix('transaksi')
         ->name('transaksi.')
         ->group(function () {
-            Route::get('/gudang', [TransaksiGudangController::class, 'index'])
-                ->name('gudang');
-
             Route::post('/gudang', [TransaksiGudangController::class, 'store'])
                 ->name('gudang.store');
 
@@ -128,18 +148,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
 
             Route::delete('/gudang/{id}', [TransaksiGudangController::class, 'destroy'])
                 ->name('gudang.destroy');
-
-            Route::get('/penjualan', [TransaksiPenjualanController::class, 'index'])
-                ->name('penjualan');
-
-            Route::get('/penjualan/tambah', [TransaksiPenjualanController::class, 'tambah'])
-                ->name('penjualan.tambah');
-            
-            Route::post('/penjualan', [TransaksiPenjualanController::class, 'store'])
-                ->name('penjualan.store');
-
-            Route::get('/retur', [TransaksiReturController::class, 'index'])
-                ->name('retur');
 
             Route::post('/retur', [TransaksiReturController::class, 'store'])
                 ->name('retur.store');
@@ -166,7 +174,6 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
 
             Route::delete('/{user}', [UserController::class, 'destroy'])
                 ->name('destroy');
-
         }
     );
 
@@ -177,12 +184,13 @@ Route::middleware(['auth', 'verified', 'role:super admin|admin'])->group(functio
                 ->name('index');
         }
     );
-    
 });
 
+// Theme and layout switchers
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
 
+// Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

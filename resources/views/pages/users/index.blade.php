@@ -54,9 +54,9 @@
                         <x-base.table.th class="whitespace-nowrap border-b-0">
                             Email
                         </x-base.table.th>
-                        <!-- <x-base.table.th class="whitespace-nowrap border-b-0">
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
                             Role
-                        </x-base.table.th> -->
+                        </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Tindakan
                         </x-base.table.th>
@@ -80,11 +80,11 @@
                             >
                                 {{ $user->email }}
                             </x-base.table.td>
-                            <!-- <x-base.table.td
+                            <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $user->role }}
-                            </x-base.table.td> -->
+                                {{ $user->getRoleNames()->first() }}
+                            </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
                                 'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
@@ -95,7 +95,7 @@
                                         href="#"
                                         data-tw-toggle="modal"
                                         data-tw-target="#edit-user-modal"
-                                        onclick="openEditModal('{{ route('users.update', $user->id) }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->role }}')"
+                                        onclick="openEditModal('{{ route('users.update', $user->id) }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->getRoleNames()->first() }}')"
                                         type="button"
                                     >
                                         <x-base.lucide
@@ -240,6 +240,19 @@
                                         required
                                     />
                                 </div>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="modal-form-5">Role</x-base.form-label>
+                                    <x-base.form-select
+                                        id="modal-form-5"
+                                        name="role"
+                                        required
+                                    >
+                                        <option value="">Pilih Role</option>
+                                        @foreach(\Spatie\Permission\Models\Role::all() as $role)
+                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </x-base.form-select>
+                                </div>
                             </x-base.dialog.description>
 
                             <x-base.dialog.footer>
@@ -312,6 +325,19 @@
                                         placeholder="Masukkan password baru"
                                     />
                                 </div>
+                                <div class="col-span-12 sm:col-span-12">
+                                    <x-base.form-label for="edit-role">Role</x-base.form-label>
+                                    <x-base.form-select
+                                        id="edit-role"
+                                        name="role"
+                                        required
+                                    >
+                                        <option value="">Pilih Role</option>
+                                        @foreach(\Spatie\Permission\Models\Role::all() as $role)
+                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </x-base.form-select>
+                                </div>
                             </x-base.dialog.description>
 
                             <x-base.dialog.footer>
@@ -380,13 +406,14 @@
     <!-- END: Delete Confirmation Modal -->
 
     <script>
-        function openEditModal(actionUrl, name, email) {
+        function openEditModal(actionUrl, name, email, role) {
             // Set form action URL
             document.getElementById('edit-user-form').action = actionUrl;
 
             // Populate form fields
             document.getElementById('edit-name').value = name;
             document.getElementById('edit-email').value = email;
+            document.getElementById('edit-role').value = role;
         }
 
         function openDeleteModal(url) {

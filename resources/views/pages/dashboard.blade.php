@@ -120,7 +120,7 @@
                             <div class="flex">
                                 <div>
                                     <div class="text-lg font-medium text-primary dark:text-slate-300 xl:text-xl">
-                                        49 penjualan
+                                        {{ $currentMonthSalesCount }} penjualan
                                     </div>
                                     <div class="mt-0.5 text-slate-500">Bulan ini</div>
                                 </div>
@@ -129,12 +129,15 @@
                                 </div>
                                 <div>
                                     <div class="text-lg font-medium text-slate-500 xl:text-xl">
-                                        25 penjualan
+                                        {{ $previousMonthSalesCount }} penjualan
                                     </div>
                                     <div class="mt-0.5 text-slate-500">Bulan kemarin</div>
                                 </div>
                             </div>
                         </div>
+                        <!-- Store monthly sales data in a hidden input for JavaScript to use -->
+                        <input type="hidden" id="monthlySalesData" value="{{ json_encode(array_values($monthlySalesData)) }}">
+                        
                         <!-- BEGIN: Vertical Bar Chart -->
                         <x-base.preview-component class="intro-y">
                             <div

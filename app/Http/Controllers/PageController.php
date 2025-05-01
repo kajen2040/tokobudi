@@ -30,7 +30,39 @@ class PageController extends Controller
         $totalStock = \App\Models\Barang::sum('stok');
         $totalSales = \App\Models\TransaksiPenjualan::calculateTotalSales();
         $totalRetur = \App\Models\TransaksiRetur::sum('jml_barang');
-        return view('pages/dashboard', compact('itemTypesCount', 'totalStock', 'totalSales', 'totalRetur'));
+
+        // Get monthly sales data for the current year
+        $currentYear = date('Y');
+        $monthlySalesData = [];
+        
+        for ($month = 1; $month <= 12; $month++) {
+            $monthlySalesData[$month] = \App\Models\TransaksiPenjualan::whereYear('tgl_transaksi', $currentYear)
+                ->whereMonth('tgl_transaksi', $month)
+                ->sum('jml_barang');
+        }
+        
+        // Get sales count for current and previous month
+        $currentMonth = date('m');
+        $previousMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;
+        $previousMonthYear = $currentMonth > 1 ? $currentYear : $currentYear - 1;
+        
+        $currentMonthSalesCount = \App\Models\TransaksiPenjualan::whereYear('tgl_transaksi', $currentYear)
+            ->whereMonth('tgl_transaksi', $currentMonth)
+            ->sum('jml_barang');
+            
+        $previousMonthSalesCount = \App\Models\TransaksiPenjualan::whereYear('tgl_transaksi', $previousMonthYear)
+            ->whereMonth('tgl_transaksi', $previousMonth)
+            ->sum('jml_barang');
+
+        return view('pages/dashboard', compact(
+            'itemTypesCount', 
+            'totalStock', 
+            'totalSales', 
+            'totalRetur',
+            'monthlySalesData',
+            'currentMonthSalesCount',
+            'previousMonthSalesCount'
+        ));
     }
     
     /**
