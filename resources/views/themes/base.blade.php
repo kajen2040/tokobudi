@@ -30,7 +30,7 @@ License: You must have a valid license purchased only from themeforest(the above
     >
     <meta
         name="keywords"
-        content="admin template, Toko Budi, dashboard template, flat admin template, responsive admin template, web app"
+        content="admin template, dashboard template, flat admin template, responsive admin template, web app"
     >
     <meta
         name="author"

@@ -90,6 +90,11 @@ class SideMenu
                     'route_name' => 'users.index',
                     'title' => 'Users'
                 ];
+                $menu['setting'] = [
+                    'icon' => 'settings',
+                    'route_name' => 'setting.index',
+                    'title' => 'Setting'
+                ];
             }
 
             return $menu;

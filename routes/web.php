@@ -199,6 +199,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
                 ->name('index');
         }
     );
+
+    Route::prefix('setting')
+        ->name('setting.')
+        ->group(function () {
+            Route::get('/', [App\Http\Controllers\SettingController::class, 'index'])
+                ->name('index');
+            Route::post('/', [App\Http\Controllers\SettingController::class, 'update'])
+                ->name('update');
+        }
+    );
 });
 
 // Theme and layout switchers
