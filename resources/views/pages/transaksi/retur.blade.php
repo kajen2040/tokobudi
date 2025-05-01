@@ -78,12 +78,12 @@
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $retur->pelanggan->nama }}
+                                {{ $retur->transaksiPenjualanDetail->transaksiPenjualan->pelanggan->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $retur->barang->nama }}
+                                {{ $retur->transaksiPenjualanDetail->barang->nama }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
@@ -142,29 +142,13 @@
                                
                                     <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
                                         <div class="col-span-12">
-                                            <x-base.form-label for="edit-pelanggan-{{ $retur->id }}">Pelanggan</x-base.form-label>
-                                            <select name="pelanggan_id" id="edit-pelanggan-{{ $retur->id }}" class="form-select w-full">
-                                                <option value="">Pilih Pelanggan</option>
-                                                @foreach(\App\Models\Pelanggan::all() as $pelanggan)
-                                                    <option value="{{ $pelanggan->id }}" {{ $retur->pelanggan_id == $pelanggan->id ? 'selected' : '' }}>{{ $pelanggan->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-span-12">
-                                            <x-base.form-label for="edit-barang-{{ $retur->id }}">Barang</x-base.form-label>
-                                            <select name="barang_id" id="edit-barang-{{ $retur->id }}" class="form-select w-full">
-                                                <option value="">Pilih Barang</option>
-                                                @foreach(\App\Models\Barang::all() as $barang)
-                                                    <option value="{{ $barang->id }}" {{ $retur->barang_id == $barang->id ? 'selected' : '' }}>{{ $barang->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-span-12">
-                                            <x-base.form-label for="edit-diskon-{{ $retur->id }}">Diskon</x-base.form-label>
-                                            <select name="diskon_id" id="edit-diskon-{{ $retur->id }}" class="form-select w-full">
-                                                <option value="">Pilih Diskon (Opsional)</option>
-                                                @foreach(\App\Models\Diskon::all() as $diskon)
-                                                    <option value="{{ $diskon->id }}" {{ $retur->diskon_id == $diskon->id ? 'selected' : '' }}>{{ $diskon->nama }} ({{ $diskon->persen }}%)</option>
+                                            <x-base.form-label for="edit-transaksi-detail-{{ $retur->id }}">Transaksi Penjualan</x-base.form-label>
+                                            <select name="transaksi_penjualan_detail_id" id="edit-transaksi-detail-{{ $retur->id }}" class="form-select w-full">
+                                                <option value="">Pilih Transaksi Penjualan</option>
+                                                @foreach($penjualanDetails as $detail)
+                                                    <option value="{{ $detail->id }}" {{ $retur->transaksi_penjualan_detail_id == $detail->id ? 'selected' : '' }}>
+                                                        {{ $detail->transaksiPenjualan->pelanggan->nama }} - {{ $detail->barang->nama }} ({{ $detail->jml_barang }} item) - {{ \Carbon\Carbon::parse($detail->transaksiPenjualan->tgl_transaksi)->format('d/m/Y') }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -274,29 +258,13 @@
            
                 <x-base.dialog.description class="grid grid-cols-12 gap-4 gap-y-3">
                     <div class="col-span-12">
-                        <x-base.form-label for="pelanggan">Pelanggan</x-base.form-label>
-                        <select name="pelanggan_id" id="pelanggan" class="form-select w-full">
-                            <option value="">Pilih Pelanggan</option>
-                            @foreach(\App\Models\Pelanggan::all() as $pelanggan)
-                                <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-span-12">
-                        <x-base.form-label for="barang">Barang</x-base.form-label>
-                        <select name="barang_id" id="barang" class="form-select w-full">
-                            <option value="">Pilih Barang</option>
-                            @foreach(\App\Models\Barang::all() as $barang)
-                                <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-span-12">
-                        <x-base.form-label for="diskon">Diskon</x-base.form-label>
-                        <select name="diskon_id" id="diskon" class="form-select w-full">
-                            <option value="">Pilih Diskon (Opsional)</option>
-                            @foreach(\App\Models\Diskon::all() as $diskon)
-                                <option value="{{ $diskon->id }}">{{ $diskon->nama }} ({{ $diskon->persen }}%)</option>
+                        <x-base.form-label for="transaksi-detail">Transaksi Penjualan</x-base.form-label>
+                        <select name="transaksi_penjualan_detail_id" id="transaksi-detail" class="form-select w-full">
+                            <option value="">Pilih Transaksi Penjualan</option>
+                            @foreach($penjualanDetails as $detail)
+                                <option value="{{ $detail->id }}">
+                                    {{ $detail->transaksiPenjualan->pelanggan->nama }} - {{ $detail->barang->nama }} ({{ $detail->jml_barang }} item) - {{ \Carbon\Carbon::parse($detail->transaksiPenjualan->tgl_transaksi)->format('d/m/Y') }}
+                                </option>
                             @endforeach
                         </select>
                     </div>

@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Satuan;
 use App\Models\Pelanggan;
 use App\Models\TransaksiRetur;
+use App\Models\TransaksiPenjualanDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -16,51 +17,55 @@ class TransaksiReturController extends Controller
     {
         $search = $request->get('search');
         
-        $data = TransaksiRetur::with(['barang', 'pelanggan', 'barangDetail.satuan', 'barangDetail.jenis'])
+        $data = TransaksiRetur::with(['transaksiPenjualanDetail.barang', 'transaksiPenjualanDetail.transaksiPenjualan.pelanggan'])
             ->when($search, function($query) use ($search) {
-                $query->whereHas('barang', function($q) use ($search) {
+                $query->whereHas('transaksiPenjualanDetail.barang', function($q) use ($search) {
                     $q->where('nama', 'like', "%{$search}%");
                 })
-                ->orWhereHas('pelanggan', function($q) use ($search) {
+                ->orWhereHas('transaksiPenjualanDetail.transaksiPenjualan.pelanggan', function($q) use ($search) {
                     $q->where('nama', 'like', "%{$search}%");
                 });
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('pages.transaksi.retur', compact('data', 'search'));
+        $penjualanDetails = TransaksiPenjualanDetail::with(['transaksiPenjualan.pelanggan', 'barang'])
+            ->get();
+            
+        return view('pages.transaksi.retur', compact('data', 'search', 'penjualanDetails'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'barang_id' => 'required|exists:barang,id',
-            'pelanggan_id' => 'required|exists:pelanggan,id',
+            'transaksi_penjualan_detail_id' => 'required|exists:transaksi_penjualan_detail,id',
             'jml_barang' => 'required|numeric|min:1',
             'keterangan' => 'required|string',
-            'diskon_id' => 'nullable|exists:diskon,id',
         ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
+        $penjualanDetail = TransaksiPenjualanDetail::findOrFail($request->transaksi_penjualan_detail_id);
         
-        // Check if stock is sufficient
-        if ($barang->stok < $request->jml_barang) {
-            return redirect()->back()->with('error', 'Stok barang tidak mencukupi');
+        // Check if the returned quantity is not more than the purchased quantity
+        if ($penjualanDetail->jml_barang < $request->jml_barang) {
+            return redirect()->back()->with('error', 'Jumlah barang yang diretur tidak boleh melebihi jumlah pembelian');
+        }
+
+        // Check for existing returns for this sale detail
+        $existingReturns = TransaksiRetur::where('transaksi_penjualan_detail_id', $request->transaksi_penjualan_detail_id)
+            ->sum('jml_barang');
+            
+        $availableForReturn = $penjualanDetail->jml_barang - $existingReturns;
+        
+        if ($availableForReturn < $request->jml_barang) {
+            return redirect()->back()->with('error', "Jumlah barang yang dapat diretur hanya {$availableForReturn}");
         }
 
         TransaksiRetur::create([
             'user_id' => auth()->id(),
-            'barang_id' => $request->barang_id,
-            'pelanggan_id' => $request->pelanggan_id,
-            'diskon_id' => $request->diskon_id,
+            'transaksi_penjualan_detail_id' => $request->transaksi_penjualan_detail_id,
             'jml_barang' => $request->jml_barang,
             'keterangan' => $request->keterangan,
             'tgl_transaksi' => now(),
-        ]);
-
-        // Update stock
-        $barang->update([
-            'stok' => $barang->stok + $request->jml_barang
         ]);
 
         return redirect()->route('transaksi.retur')->with('success', 'Retur penjualan berhasil ditambahkan');
@@ -69,49 +74,44 @@ class TransaksiReturController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'barang_id' => 'required|exists:barang,id',
-            'pelanggan_id' => 'required|exists:pelanggan,id',
+            'transaksi_penjualan_detail_id' => 'required|exists:transaksi_penjualan_detail,id',
             'jml_barang' => 'required|numeric|min:1',
             'keterangan' => 'required|string',
-            'diskon_id' => 'nullable|exists:diskon,id',
         ]);
 
         $retur = TransaksiRetur::findOrFail($id);
-        $barang = Barang::findOrFail($request->barang_id);
-        $oldBarang = $retur->barang;
-
-        // Calculate stock changes
-        $stockChange = $request->jml_barang - $retur->jml_barang;
-
-        // Check if new stock is sufficient
-        if ($barang->stok < $stockChange) {
-            return redirect()->back()->with('error', 'Stok barang tidak mencukupi');
+        $penjualanDetail = TransaksiPenjualanDetail::findOrFail($request->transaksi_penjualan_detail_id);
+        
+        // If the sale detail has changed, we need to check both the old and new detail
+        if ($retur->transaksi_penjualan_detail_id != $request->transaksi_penjualan_detail_id) {
+            // Check for existing returns for the new sale detail
+            $existingReturns = TransaksiRetur::where('transaksi_penjualan_detail_id', $request->transaksi_penjualan_detail_id)
+                ->sum('jml_barang');
+                
+            $availableForReturn = $penjualanDetail->jml_barang - $existingReturns;
+            
+            if ($availableForReturn < $request->jml_barang) {
+                return redirect()->back()->with('error', "Jumlah barang yang dapat diretur hanya {$availableForReturn}");
+            }
+        } else {
+            // Check for existing returns for this sale detail (excluding current retur)
+            $existingReturns = TransaksiRetur::where('transaksi_penjualan_detail_id', $request->transaksi_penjualan_detail_id)
+                ->where('id', '!=', $id)
+                ->sum('jml_barang');
+                
+            $availableForReturn = $penjualanDetail->jml_barang - $existingReturns;
+            
+            if ($availableForReturn < $request->jml_barang) {
+                return redirect()->back()->with('error', "Jumlah barang yang dapat diretur hanya {$availableForReturn}");
+            }
         }
 
         // Update retur
         $retur->update([
-            'barang_id' => $request->barang_id,
-            'pelanggan_id' => $request->pelanggan_id,
-            'diskon_id' => $request->diskon_id,
+            'transaksi_penjualan_detail_id' => $request->transaksi_penjualan_detail_id,
             'jml_barang' => $request->jml_barang,
             'keterangan' => $request->keterangan,
         ]);
-
-        // Update stock
-        if ($oldBarang->id == $barang->id) {
-            // Same barang, just adjust the stock
-            $barang->update([
-                'stok' => $barang->stok + $stockChange
-            ]);
-        } else {
-            // Different barang, restore old stock and reduce new stock
-            $oldBarang->update([
-                'stok' => $oldBarang->stok - $retur->jml_barang
-            ]);
-            $barang->update([
-                'stok' => $barang->stok + $request->jml_barang
-            ]);
-        }
 
         return redirect()->route('transaksi.retur')->with('success', 'Retur penjualan berhasil diperbarui');
     }
@@ -119,13 +119,6 @@ class TransaksiReturController extends Controller
     public function destroy($id)
     {
         $retur = TransaksiRetur::findOrFail($id);
-        $barang = $retur->barang;
-
-        // Restore stock
-        $barang->update([
-            'stok' => $barang->stok - $retur->jml_barang
-        ]);
-
         $retur->delete();
 
         return redirect()->route('transaksi.retur')->with('success', 'Retur penjualan berhasil dihapus');

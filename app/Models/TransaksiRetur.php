@@ -11,20 +11,39 @@ class TransaksiRetur extends Model
 
     protected $table = 'transaksi_retur';
 
-    protected $fillable = ['user_id', 'barang_id', 'diskon_id', 'pelanggan_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
+    protected $fillable = ['user_id', 'transaksi_penjualan_detail_id', 'tgl_transaksi', 'jml_barang', 'keterangan'];
 
     protected $casts = [
         'tgl_transaksi' => 'datetime',
     ];
 
+    public function transaksiPenjualanDetail()
+    {
+        return $this->belongsTo(TransaksiPenjualanDetail::class, 'transaksi_penjualan_detail_id', 'id');
+    }
+
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'barang_id', 'id');
+        return $this->hasOneThrough(
+            Barang::class, 
+            TransaksiPenjualanDetail::class,
+            'id', // Foreign key on TransaksiPenjualanDetail
+            'id', // Foreign key on Barang
+            'transaksi_penjualan_detail_id', // Local key on TransaksiRetur
+            'barang_id' // Local key on TransaksiPenjualanDetail
+        );
     }
     
     public function barangDetail()
     {
-        return $this->hasOneThrough(BarangDetail::class, Barang::class, 'id', 'barang_id', 'barang_id', 'id');
+        return $this->hasOneThrough(
+            BarangDetail::class, 
+            Barang::class, 
+            'id', 
+            'barang_id', 
+            'transaksi_penjualan_detail_id', 
+            'id'
+        );
     }
 
     public function jenis()
@@ -37,13 +56,20 @@ class TransaksiRetur extends Model
         return $this->belongsTo(Satuan::class);
     }
 
-    public function diskon()
-    {
-        return $this->belongsTo(Diskon::class, 'diskon_id');
-    }
-
     public function pelanggan()
     {
-        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
+        return $this->hasOneThrough(
+            Pelanggan::class,
+            TransaksiPenjualan::class,
+            'id', // Foreign key on TransaksiPenjualan
+            'id', // Foreign key on Pelanggan
+            'transaksi_penjualan_detail_id', // Local key on TransaksiRetur
+            'pelanggan_id' // Local key on TransaksiPenjualan
+        );
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

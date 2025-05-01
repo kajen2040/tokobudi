@@ -13,14 +13,11 @@ return new class extends Migration
     {
         Schema::create('transaksi_retur', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pelanggan_id')->references('id')->on('pelanggan')->constrained('pelanggan', 'id');
-            $table->foreignId('barang_id')->references('id')->on('barang')->constrained('barang', 'id');
-            $table->foreignId('diskon_id')->nullable()->references('id')->on('diskon')->constrained('diskon', 'id');
+            $table->foreignId('transaksi_penjualan_detail_id')->references('id')->on('transaksi_penjualan_detail')->constrained('transaksi_penjualan_detail', 'id');
             $table->foreignId('user_id')->references('id')->on('users')->constrained('users', 'id');
             
             $table->date('tgl_transaksi');
             $table->integer('jml_barang');
-            $table->integer('total')->nullable();
             $table->string('keterangan')->nullable();
 
             $table->timestamps();
