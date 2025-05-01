@@ -1,12 +1,12 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Dashboard - Toko Budi</title>
+    <title>{{ $storeSettings['store_name'] }} - Dashboard</title>
 @endsection
 
 @section('subcontent')
     <div class="grid grid-cols-12 gap-6">
-        <div class="col-span-12 2xl:col-span-9">
+        <div class="col-span-12 2xl:col-span-12">
             <div class="grid grid-cols-12 gap-6">
                 <!-- BEGIN: General Report -->
                 <div class="col-span-12 mt-8">
@@ -158,80 +158,6 @@
                     </div>
                 </div>
                 <!-- END: Sales Report -->
-            </div>
-        </div>
-        <div class="col-span-12 2xl:col-span-3">
-            <div class="-mb-10 pb-10 2xl:border-l">
-                <div class="grid grid-cols-12 gap-x-6 gap-y-6 2xl:gap-x-0 2xl:pl-6">
-                    
-                    <!-- BEGIN: Important Notes -->
-                    <div
-                        class="col-span-12 mt-3 md:col-span-6 xl:col-span-12 xl:col-start-1 xl:row-start-1 2xl:col-start-auto 2xl:row-start-auto">
-                        <div class="intro-x flex h-10 items-center">
-                            <h2 class="mr-auto truncate text-lg font-medium">
-                                Pesan Penting
-                            </h2>
-                            <x-base.button
-                                class="tiny-slider-navigator mr-2 border-slate-300 px-2 text-slate-600 dark:text-slate-300"
-                                data-carousel="important-notes"
-                                data-target="prev"
-                            >
-                                <x-base.lucide
-                                    class="h-4 w-4"
-                                    icon="ChevronLeft"
-                                />
-                            </x-base.button>
-                            <x-base.button
-                                class="tiny-slider-navigator mr-2 border-slate-300 px-2 text-slate-600 dark:text-slate-300"
-                                data-carousel="important-notes"
-                                data-target="next"
-                            >
-                                <x-base.lucide
-                                    class="h-4 w-4"
-                                    icon="ChevronRight"
-                                />
-                            </x-base.button>
-                        </div>
-                        <div class="intro-x mt-5">
-                            <div class="box zoom-in">
-                                <x-base.tiny-slider id="important-notes">
-                                    <div class="p-5">
-                                        <div class="truncate text-base font-medium">
-                                            Bersikaplah ramah 
-                                        </div>
-                                        <div class="mt-1 text-slate-400">2 Hours ago</div>
-                                        <div class="mt-1 text-justify text-slate-500">
-                                            Sapa dan senyum kepada setiap pembeli yang datang.
-                                        </div>
-
-                                    </div>
-                                    <div class="p-5">
-                                        <div class="truncate text-base font-medium">
-                                            Teliti ketika bertransaksi
-                                        </div>
-                                        <div class="mt-1 text-slate-400">5 Hours ago</div>
-                                        <div class="mt-1 text-justify text-slate-500">
-                                            Pastikan semua transaksi dilakukan dengan benar dan terekam di aplikasi.
-                                        </div>
-                                        
-                                    </div>
-                                    <div class="p-5">
-                                        <div class="truncate text-base font-medium">
-                                            Cek berkala stok barang
-                                        </div>
-                                        <div class="mt-1 text-slate-400">11 Hours ago</div>
-                                        <div class="mt-1 text-justify text-slate-500">
-                                            Rutin cek stok barang dan laporkan jika ada barang yang habis.
-                                        </div>
-                                        
-                                    </div>
-                                </x-base.tiny-slider>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END: Important Notes -->
-                    
-                </div>
             </div>
         </div>
     </div>

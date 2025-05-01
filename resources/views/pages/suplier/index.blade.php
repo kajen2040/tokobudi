@@ -1,7 +1,7 @@
 @extends('../../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Data Suplier</title>
+    <title>{{ $storeSettings['store_name'] }} - Data Suplier</title>
 @endsection
 
 @section('subcontent')

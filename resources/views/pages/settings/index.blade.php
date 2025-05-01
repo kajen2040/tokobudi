@@ -1,7 +1,7 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Pengaturan Toko - {{ $settings['store_name'] }}</title>
+    <title>{{ $storeSettings['store_name'] }} - Pengaturan Toko</title>
     <style>
         @keyframes progressBar {
             0% { width: 100%; }

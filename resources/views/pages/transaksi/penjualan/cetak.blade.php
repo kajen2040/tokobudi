@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Faktur Penjualan #{{ $transaksi->id }}</title>
+    <title>{{ $storeSettings['store_name'] }} - Faktur Penjualan #{{ $transaksi->id }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {

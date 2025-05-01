@@ -1,7 +1,7 @@
 @extends('../../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Edit Transaksi Penjualan</title>
+    <title>{{ $storeSettings['store_name'] }} - Edit Transaksi Penjualan</title>
 @endsection
 
 @section('subcontent')

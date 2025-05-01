@@ -1,13 +1,13 @@
 @extends('../../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Laporan Penjualan Barang - Toko Budi</title>
+    <title>{{ $storeSettings['store_name'] }} - Laporan Penjualan</title>
 @endsection
 
 @section('subcontent')
     <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            <span class="text-primary">Laporan Penjualan</span> Barang
+            <span class="text-primary">Laporan Penjualan</span> 
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
             <x-base.button variant="primary" class="shadow-md mr-2">

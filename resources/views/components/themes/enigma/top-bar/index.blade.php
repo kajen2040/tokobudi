@@ -105,8 +105,8 @@
                 class="image-fit zoom-in intro-x block h-8 w-8 scale-110 overflow-hidden rounded-full shadow-lg"
             >
                 <img
-                    src="{{ Vite::asset($faker['photos'][0]) }}"
-                    alt="Photo Profile"
+                    src="{{ auth()->user()->avatarUrl }}"
+                    alt="{{ auth()->user()->name }}"
                 />
             </x-base.menu.button>
             <x-base.menu.items
@@ -115,27 +115,29 @@
                 <x-base.menu.header class="font-normal">
                     <div class="font-medium">{{ auth()->user()->name }}</div>
                     <div class="mt-0.5 text-xs text-white/70 dark:text-slate-500">
-                        {{-- {{ Auth::user()->role }} --}}
+                        {{ auth()->user()->getRoleNames()->first() }}
                     </div>
                 </x-base.menu.header>
                 <x-base.menu.divider class="bg-white/[0.08]" />
-                {{-- <x-base.menu.item class="hover:bg-white/5">
-                    <x-base.lucide
-                        class="mr-2 h-4 w-4"
-                        icon="User"
-                    /> Profile
-                </x-base.menu.item> --}}
-                {{-- <x-base.menu.divider class="bg-white/[0.08]" /> --}}
-                <form method="POST" action="{{ route('logout') }}">
+                <x-base.menu.item class="hover:bg-white/5">
+                    <form action="{{ route('profile.edit') }}" method="GET" class="w-full">
+                        <button type="submit" class="w-full flex items-center py-1">
+                            <x-base.lucide
+                                class="mr-2 h-4 w-4"
+                                icon="User"
+                            /> 
+                            Profile
+                        </button>
+                    </form>
+                </x-base.menu.item>
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <x-base.menu.item class="hover:bg-white/5">
-                        <x-base.lucide
-                            class="mr-2 h-4 w-4"
-                            icon="ToggleRight"
-                        />
-
-                        <button onclick="event.preventDefault();
-                            this.closest('form').submit();">
+                        <button type="submit" class="w-full flex items-center py-1">
+                            <x-base.lucide
+                                class="mr-2 h-4 w-4"
+                                icon="ToggleRight"
+                            />
                             {{ __('Log Out') }}
                         </button>
                     </x-base.menu.item>

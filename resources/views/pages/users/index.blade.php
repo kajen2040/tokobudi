@@ -1,7 +1,7 @@
 @extends('../../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Users</title>
+    <title>{{ $storeSettings['store_name'] }} - Data Users</title>
 @endsection
 
 @section('subcontent')
