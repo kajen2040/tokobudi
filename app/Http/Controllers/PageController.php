@@ -28,7 +28,7 @@ class PageController extends Controller
     {
         $itemTypesCount = \App\Models\Jenis::count();
         $totalStock = \App\Models\Barang::sum('stok');
-        $totalSales = \App\Models\TransaksiPenjualan::calculateTotalSales();
+        $totalSales = \App\Models\TransaksiPenjualanDetail::sum('jml_barang');
         $totalRetur = \App\Models\TransaksiRetur::sum('jml_barang');
 
         // Get monthly sales data for the current year
@@ -36,9 +36,10 @@ class PageController extends Controller
         $monthlySalesData = [];
         
         for ($month = 1; $month <= 12; $month++) {
-            $monthlySalesData[$month] = \App\Models\TransaksiPenjualan::whereYear('tgl_transaksi', $currentYear)
-                ->whereMonth('tgl_transaksi', $month)
-                ->sum('jml_barang');
+            $monthlySalesData[$month] = \App\Models\TransaksiPenjualanDetail::whereHas('transaksiPenjualan', function($query) use ($currentYear, $month) {
+                $query->whereYear('tgl_transaksi', $currentYear)
+                      ->whereMonth('tgl_transaksi', $month);
+            })->sum('jml_barang');
         }
         
         // Get sales count for current and previous month
@@ -46,13 +47,15 @@ class PageController extends Controller
         $previousMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;
         $previousMonthYear = $currentMonth > 1 ? $currentYear : $currentYear - 1;
         
-        $currentMonthSalesCount = \App\Models\TransaksiPenjualan::whereYear('tgl_transaksi', $currentYear)
-            ->whereMonth('tgl_transaksi', $currentMonth)
-            ->sum('jml_barang');
+        $currentMonthSalesCount = \App\Models\TransaksiPenjualanDetail::whereHas('transaksiPenjualan', function($query) use ($currentYear, $currentMonth) {
+            $query->whereYear('tgl_transaksi', $currentYear)
+                  ->whereMonth('tgl_transaksi', $currentMonth);
+        })->sum('jml_barang');
             
-        $previousMonthSalesCount = \App\Models\TransaksiPenjualan::whereYear('tgl_transaksi', $previousMonthYear)
-            ->whereMonth('tgl_transaksi', $previousMonth)
-            ->sum('jml_barang');
+        $previousMonthSalesCount = \App\Models\TransaksiPenjualanDetail::whereHas('transaksiPenjualan', function($query) use ($previousMonthYear, $previousMonth) {
+            $query->whereYear('tgl_transaksi', $previousMonthYear)
+                  ->whereMonth('tgl_transaksi', $previousMonth);
+        })->sum('jml_barang');
 
         return view('pages/dashboard', compact(
             'itemTypesCount', 

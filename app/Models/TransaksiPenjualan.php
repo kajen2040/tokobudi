@@ -11,31 +11,11 @@ class TransaksiPenjualan extends Model
 
     protected $table = 'transaksi_penjualan';
 
-    protected $fillable = ['user_id', 'barang_id', 'diskon_id', 'pelanggan_id', 'tgl_transaksi', 'jml_barang', 'total', 'keterangan'];
+    protected $fillable = ['user_id', 'pelanggan_id', 'tgl_transaksi', 'total', 'keterangan'];
 
-    public function barang()
+    public function details()
     {
-        return $this->belongsTo(Barang::class, 'barang_id', 'id');
-    }
-    
-    public function barangDetail()
-    {
-        return $this->hasOneThrough(BarangDetail::class, Barang::class, 'id', 'barang_id', 'barang_id', 'id');
-    }
-
-    public function jenis()
-    {
-        return $this->belongsTo(Jenis::class);
-    }
-
-    public function satuan()
-    {
-        return $this->belongsTo(Satuan::class);
-    }
-
-    public function diskon()
-    {
-        return $this->belongsTo(Diskon::class, 'diskon_id');
+        return $this->hasMany(TransaksiPenjualanDetail::class, 'transaksi_penjualan_id', 'id');
     }
 
     public function pelanggan()
@@ -43,8 +23,13 @@ class TransaksiPenjualan extends Model
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public static function calculateTotalSales()
     {
-        return self::sum('jml_barang');
+        return self::sum('total');
     }
 }

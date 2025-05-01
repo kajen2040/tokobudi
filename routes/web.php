@@ -53,6 +53,15 @@ Route::middleware(['auth', 'verified', 'role:kasir|admin'])->group(function () {
             
             Route::post('/penjualan', [TransaksiPenjualanController::class, 'store'])
                 ->name('penjualan.store');
+                
+            Route::get('/penjualan/{id}', [TransaksiPenjualanController::class, 'show'])
+                ->name('penjualan.show');
+                
+            Route::get('/penjualan/{id}/edit', [TransaksiPenjualanController::class, 'edit'])
+                ->name('penjualan.edit');
+                
+            Route::get('/penjualan/{id}/cetak', [TransaksiPenjualanController::class, 'cetak'])
+                ->name('penjualan.cetak');
 
             Route::get('/retur', [TransaksiReturController::class, 'index'])
                 ->name('retur');
@@ -148,6 +157,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
             Route::delete('/gudang/{id}', [TransaksiGudangController::class, 'destroy'])
                 ->name('gudang.destroy');
+                
+            Route::put('/penjualan/{id}', [TransaksiPenjualanController::class, 'update'])
+                ->name('penjualan.update');
+
+            Route::delete('/penjualan/{id}', [TransaksiPenjualanController::class, 'destroy'])
+                ->name('penjualan.destroy');
 
             Route::post('/retur', [TransaksiReturController::class, 'store'])
                 ->name('retur.store');

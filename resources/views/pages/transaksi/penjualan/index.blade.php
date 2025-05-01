@@ -49,16 +49,7 @@
                             Pelanggan
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Barang
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Jumlah
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Satuan
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Jenis
+                            Jumlah Barang
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
                             Total Harga
@@ -84,38 +75,57 @@
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $item->barang->nama }}
-                            </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $item->jml_barang }}
-                            </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $item->barangDetail->satuan->satuan ?? '-' }}
-                            </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                {{ $item->barangDetail->jenis->jenis ?? '-' }}
+                                {{ $item->details->count() }} item ({{ $item->details->sum('jml_barang') }} pcs)
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
                                 Rp {{ number_format($item->total, 0, ',', '.') }},-
+                                @php
+                                    $diskonItems = $item->details->whereNotNull('diskon_id')->count();
+                                @endphp
+                                @if($diskonItems > 0)
+                                    <span class="ml-1 rounded bg-success/20 px-2 py-1 text-xs text-success">
+                                        {{ $diskonItems }} item diskon
+                                    </span>
+                                @endif
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
                                 'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
                             ])>
-                                {{-- No actions --}}
+                                <div class="flex items-center justify-center">
+                                    <a href="{{ route('transaksi.penjualan.show', $item->id) }}" class="mr-3 flex items-center">
+                                        <x-base.lucide class="mr-1 h-4 w-4" icon="Eye" />
+                                        Detail
+                                    </a>
+                                    <a href="{{ route('transaksi.penjualan.cetak', $item->id) }}" target="_blank" class="mr-3 flex items-center">
+                                        <x-base.lucide class="mr-1 h-4 w-4" icon="Printer" />
+                                        Cetak
+                                    </a>
+                                    @if(auth()->user()->hasRole('admin'))
+                                        <a href="{{ route('transaksi.penjualan.edit', $item->id) }}" class="mr-3 flex items-center text-warning">
+                                            <x-base.lucide class="mr-1 h-4 w-4" icon="Edit" />
+                                            Edit
+                                        </a>
+                                        <a href="javascript:;" class="flex items-center text-danger" 
+                                            onclick="if(confirm('Yakin ingin menghapus data ini?')) { 
+                                                document.getElementById('delete-form-{{ $item->id }}').submit(); 
+                                            }">
+                                            <x-base.lucide class="mr-1 h-4 w-4" icon="Trash" />
+                                            Hapus
+                                            <form id="delete-form-{{ $item->id }}" action="{{ route('transaksi.penjualan.destroy', $item->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </a>
+                                    @endif
+                                </div>
                             </x-base.table.td>
                         </x-base.table.tr>
                     @empty
                         <x-base.table.tr>
-                            <x-base.table.td colspan="8" class="text-center">Tidak ada data</x-base.table.td>
+                            <x-base.table.td colspan="5" class="text-center">Tidak ada data</x-base.table.td>
                         </x-base.table.tr>
                     @endforelse
                 </x-base.table.tbody>
