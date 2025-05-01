@@ -81,7 +81,7 @@
     <div class="invoice-box">
         <div class="invoice-header">
             <div class="logo">
-                TOKO BUDI
+                {{ $storeSettings['store_name'] ?? 'TOKO BUDI' }}
             </div>
             <div class="invoice-title">
                 <h2>Faktur Penjualan</h2>
@@ -143,7 +143,7 @@
                 <p>Hormat Kami,</p>
                 <br><br><br>
                 <p>_____________________</p>
-                <p>Toko Budi</p>
+                <p>{{ $storeSettings['store_name'] ?? 'Toko Budi' }}</p>
             </div>
             <div style="width: 45%; text-align: center;">
                 <p>Pelanggan,</p>
@@ -154,7 +154,7 @@
         </div>
         
         <div class="footer">
-            <p>Terima kasih atas kepercayaan Anda berbelanja di Toko Budi.</p>
+            <p>Terima kasih atas kepercayaan Anda berbelanja di {{ $storeSettings['store_name'] ?? 'Toko Budi' }}.</p>
             <p>Barang yang sudah dibeli tidak dapat dikembalikan.</p>
         </div>
         

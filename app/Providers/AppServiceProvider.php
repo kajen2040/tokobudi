@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use App\Providers\SettingsServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register the SettingsServiceProvider
+        $this->app->register(SettingsServiceProvider::class);
     }
 
     /**

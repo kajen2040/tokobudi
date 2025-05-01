@@ -33,9 +33,20 @@ class SettingController extends Controller
 
         // Update store name
         Setting::set('store_name', $request->store_name);
+        
+        // Update app name in config (for current request only)
+        config(['app.name' => $request->store_name]);
 
+        // Handle icon removal if requested
+        if ($request->has('remove_icon') && $request->remove_icon == '1') {
+            $oldIcon = Setting::get('store_icon');
+            if ($oldIcon && Storage::disk('public')->exists($oldIcon)) {
+                Storage::disk('public')->delete($oldIcon);
+            }
+            Setting::set('store_icon', null);
+        }
         // Update store icon if provided
-        if ($request->hasFile('store_icon')) {
+        elseif ($request->hasFile('store_icon')) {
             // Delete old icon if exists
             $oldIcon = Setting::get('store_icon');
             if ($oldIcon && Storage::disk('public')->exists($oldIcon)) {
@@ -45,6 +56,11 @@ class SettingController extends Controller
             // Store new icon
             $iconPath = $request->file('store_icon')->store('store', 'public');
             Setting::set('store_icon', $iconPath);
+        }
+
+        // Clear the view cache to ensure new settings are applied
+        if (function_exists('artisan')) {
+            \Artisan::call('view:clear');
         }
 
         return redirect()->route('setting.index')

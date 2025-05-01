@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ $storeSettings['store_name'] ?? config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -16,12 +16,20 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
+            <div class="flex flex-col items-center">
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    @if(isset($storeSettings['store_icon']) && $storeSettings['store_icon'])
+                        <img src="{{ asset('storage/' . $storeSettings['store_icon']) }}" 
+                             alt="{{ $storeSettings['store_name'] }}" 
+                             class="w-24 h-24 object-contain mb-2">
+                    @else
+                        <x-application-logo class="w-24 h-24 mb-2" />
+                    @endif
                 </a>
+                <h2 class="text-2xl font-medium text-gray-600 mt-2">
+                    {{ $storeSettings['store_name'] ?? 'TOKO BUDI' }}
+                </h2>
             </div>
-            <h2 class="m-4 font-medium text-gray-500 text-2xl">TOKO BUDI</h2>
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>

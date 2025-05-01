@@ -18,18 +18,25 @@
                 'w-auto' => $layout == 'top-menu',
             ])
         >
-            <img
-                class="w-6"
-                src="{{ Vite::asset('resources/images/shopping-bag.svg') }}"
-                alt="Toko Budi"
-            />
+            @if(isset($storeSettings['store_icon']) && $storeSettings['store_icon'])
+                <img
+                    class="w-6"
+                    src="{{ asset('storage/' . $storeSettings['store_icon']) }}"
+                    alt="{{ $storeSettings['store_name'] }}"
+                />
+            @else
+                <img
+                    class="w-6"
+                    src="{{ Vite::asset('resources/images/shopping-bag.svg') }}"
+                    alt="{{ $storeSettings['store_name'] ?? 'Toko Budi' }}"
+                />
+            @endif
             <span @class([
                 'ml-3 text-lg text-white',
                 'hidden xl:block' => $layout == 'side-menu',
                 'hidden' => $layout == 'simple-menu',
             ])>
-
-                Toko Budi
+                {{ $storeSettings['store_name'] ?? 'Toko Budi' }}
             </span>
         </a>
         <!-- END: Logo -->
