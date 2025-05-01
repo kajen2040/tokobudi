@@ -327,9 +327,11 @@
     <!-- BEGIN: Edit Transaksi Modal -->
     <x-base.dialog id="edit-transaksi-modal">
         <x-base.dialog.panel>
-            <form id="edit-transaksi-form" method="POST">
+            <form id="edit-transaksi-form" method="POST" action="{{ route('transaksi.gudang.update', 0) }}">
                 @csrf
                 @method('PUT')
+                <input type="hidden" id="original-jml" name="original_jml_barang" value="0">
+
                 <x-base.dialog.title>
                     <h2 class="mr-auto text-base font-medium">
                         <i class="fas fa-edit mr-2 text-warning"></i>Edit Transaksi Gudang
@@ -347,7 +349,7 @@
                                     class="w-full pl-2"
                                     required
                                 />
-                                <i class="fas fa-calendar absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <i class="fas fa-calendar-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             </div>
                         </div>
                         <div>
@@ -387,6 +389,7 @@
                                 />
                                 <i class="fas fa-cubes absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <small class="text-gray-500 mt-1 block">Stok tersedia: <span id="edit-stok-tersedia" class="font-semibold">-</span></small>
+                                <div id="sales-warning" class="mt-2" style="display: none;"></div>
                             </div>
                         </div>
                         <div>
@@ -519,7 +522,48 @@
             let stok = selectedOption.data('stok');
             $('#edit-stok-tersedia').text(stok || '-');
             $('#edit-jml_barang').attr('max', stok);
+            
+            // Check if this barang has sales transactions
+            checkSalesTransactions($(this).val());
         });
+        
+        // Check sales transactions when editing quantity
+        $('#edit-jml_barang').on('change', function() {
+            let barangId = $('#edit-barang').val();
+            let originalJml = $('#original-jml').val();
+            let newJml = $(this).val();
+            
+            // If reducing quantity, check sales transactions
+            if (parseInt(newJml) < parseInt(originalJml)) {
+                checkSalesTransactions(barangId);
+            } else {
+                $('#sales-warning').hide();
+            }
+        });
+        
+        // Function to check if barang has sales transactions
+        function checkSalesTransactions(barangId) {
+            if (!barangId) return;
+            
+            $.ajax({
+                url: "/api/check-sales-transactions/" + barangId,
+                type: "GET",
+                success: function(response) {
+                    if (response.has_transactions) {
+                        $('#sales-warning').show().html(
+                            '<div class="text-yellow-600"><i class="fas fa-exclamation-triangle"></i> ' +
+                            'Peringatan: Barang ini sudah terjual dalam transaksi penjualan. ' +
+                            'Mengurangi jumlah dapat menyebabkan stok negatif.</div>'
+                        );
+                    } else {
+                        $('#sales-warning').hide();
+                    }
+                },
+                error: function() {
+                    $('#sales-warning').hide();
+                }
+            });
+        }
 
         // Format harga beli on input (Add Form)
         $('#harga_beli').on('input', function() {
@@ -566,8 +610,12 @@
             $('#edit-suplier').val(transaksi.suplier_id).trigger('change');
             $('#edit-barang').val(transaksi.barang_id).trigger('change');
             $('#edit-jml_barang').val(transaksi.jml_barang);
+            $('#original-jml').val(transaksi.jml_barang);
             $('#edit-harga_beli').val(transaksi.harga_beli);
             $('#edit-keterangan').val(transaksi.keterangan);
+            
+            // Check for sales transactions
+            checkSalesTransactions(transaksi.barang_id);
             
             // Update stok info
             let selectedOption = $('#edit-barang').find('option:selected');

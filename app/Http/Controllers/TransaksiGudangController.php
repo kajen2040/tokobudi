@@ -92,27 +92,63 @@ class TransaksiGudangController extends Controller
             'keterangan' => 'nullable|string|max:255'
         ]);
 
-        DB::transaction(function () use ($transaksi, $validated) {
-            // Simpan perubahan transaksi
-            $transaksi->update($validated);
+        try {
+            DB::transaction(function () use ($transaksi, $validated) {
+                // Check if barang_id changed
+                $barangIdChanged = $transaksi->barang_id != $validated['barang_id'];
+                
+                // Get original and new barang
+                $originalBarang = Barang::findOrFail($transaksi->barang_id);
+                $newBarang = $barangIdChanged 
+                    ? Barang::findOrFail($validated['barang_id']) 
+                    : $originalBarang;
+                
+                // Calculate stock difference
+                $selisihStok = $validated['jml_barang'] - $transaksi->jml_barang;
+                
+                // Check if there are sales transactions for this item
+                $hasSalesTransactions = false;
+                if ($selisihStok < 0) {  // Only check if decreasing the stock
+                    $hasSalesTransactions = DB::table('transaksi_penjualan_detail')
+                        ->where('barang_id', $transaksi->barang_id)
+                        ->exists();
+                    
+                    // Check if we have enough stock after sales transactions
+                    if ($hasSalesTransactions && ($originalBarang->stok + $selisihStok < 0)) {
+                        throw new \Exception('Tidak dapat mengurangi stok karena barang sudah terjual');
+                    }
+                }
+                
+                // Update transaction
+                $transaksi->update($validated);
 
-            // Update stok barang
-            $barang = Barang::findOrFail($validated['barang_id']);
-            
-            // Hitung selisih stok
-            $selisihStok = $validated['jml_barang'] - $transaksi->jml_barang;
-            
-            // Update stok
-            $stokBaru = $barang->stok + $selisihStok;
+                // If barang_id changed, we need to update both original and new barang
+                if ($barangIdChanged) {
+                    // Revert stock from original barang
+                    $originalBarang->update([
+                        'stok' => $originalBarang->stok - $transaksi->jml_barang
+                    ]);
+                    
+                    // Update stock in new barang
+                    $newBarang->update([
+                        'stok' => $newBarang->stok + $validated['jml_barang'],
+                        'harga_beli' => $validated['harga_beli']
+                    ]);
+                } else {
+                    // If same barang, just update with difference
+                    $stokBaru = $originalBarang->stok + $selisihStok;
+                    
+                    $originalBarang->update([
+                        'stok' => $stokBaru,
+                        'harga_beli' => $validated['harga_beli']
+                    ]);
+                }
+            });
 
-            // Update stok dan harga beli
-            $barang->update([
-                'stok' => $stokBaru,
-                'harga_beli' => $validated['harga_beli']
-            ]);
-        });
-
-        return redirect()->route('transaksi.gudang')->with('success', 'Transaksi berhasil diperbarui.');
+            return redirect()->route('transaksi.gudang')->with('success', 'Transaksi berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function destroy($id)
