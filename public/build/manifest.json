@@ -5,9 +5,6 @@
   "_axios-1779699b.js": {
     "file": "assets/axios-1779699b.js"
   },
-  "_color-676ffe0d.js": {
-    "file": "assets/color-676ffe0d.js"
-  },
   "_index-229da860.js": {
     "file": "assets/index-229da860.js",
     "imports": [
@@ -40,7 +37,7 @@
     "src": "node_modules/leaflet/dist/images/marker-icon.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-16fbdbd4.css",
+    "file": "assets/app-5304af56.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
@@ -631,7 +628,7 @@
     "src": "resources/js/components/themes/enigma/top-bar.js"
   },
   "resources/js/components/themes/icewall/top-bar.js": {
-    "file": "assets/top-bar-9e092300.js",
+    "file": "assets/top-bar-b537ce70.js",
     "isEntry": true,
     "src": "resources/js/components/themes/icewall/top-bar.js"
   },
@@ -641,12 +638,12 @@
     "src": "resources/js/components/themes/rubick/top-bar.js"
   },
   "resources/js/components/themes/tinker/top-bar.js": {
-    "file": "assets/top-bar-b537ce70.js",
+    "file": "assets/top-bar-9e092300.js",
     "isEntry": true,
     "src": "resources/js/components/themes/tinker/top-bar.js"
   },
   "resources/js/components/vertical-bar-chart.js": {
-    "file": "assets/vertical-bar-chart-aeb98a47.js",
+    "file": "assets/vertical-bar-chart-e96eb54d.js",
     "isEntry": true,
     "src": "resources/js/components/vertical-bar-chart.js"
   },
@@ -701,19 +698,16 @@
     "src": "resources/js/themes/tinker.js"
   },
   "resources/js/utils/colors.js": {
-    "file": "assets/colors-fdf91df2.js",
+    "file": "assets/colors-d8892a64.js",
     "imports": [
-      "_color-676ffe0d.js",
+      "resources/js/utils/helper.js",
       "__commonjsHelpers-725317a4.js"
     ],
     "isEntry": true,
     "src": "resources/js/utils/colors.js"
   },
   "resources/js/utils/helper.js": {
-    "file": "assets/helper-cfb03057.js",
-    "imports": [
-      "_color-676ffe0d.js"
-    ],
+    "file": "assets/helper-2241322f.js",
     "isEntry": true,
     "src": "resources/js/utils/helper.js"
   },
