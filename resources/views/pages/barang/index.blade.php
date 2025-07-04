@@ -74,7 +74,7 @@
                                     <div class="image-fit zoom-in h-9 w-9">
                                         <img
                                             class="rounded-lg border-white shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ asset('storage/'. $barang->foto) }}"
+                                            src="{{ Storage::disk('s3')->url($barang->foto) }}"
                                             as="img"
                                         />
                                     </div>
@@ -503,7 +503,7 @@
         // Set current photo preview
         const fotoPreview = document.getElementById('edit-barang-foto-preview');
         if (data.foto) {
-            fotoPreview.src = "{{ asset('storage/') }}/" + data.foto;
+            fotoPreview.src = "{{ Storage::disk('s3')->url('') }}".replace(/\/$/, '') + '/' + data.foto;
             fotoPreview.classList.remove('hidden');
         } else {
             fotoPreview.classList.add('hidden');
