@@ -21,7 +21,7 @@
             @if(isset($storeSettings['store_icon']) && $storeSettings['store_icon'])
                 <img
                     class="w-6"
-                    src="{{ asset('storage/' . $storeSettings['store_icon']) }}"
+                    src="{{ Storage::disk('s3')->url($storeSettings['store_icon']) }}"
                     alt="{{ $storeSettings['store_name'] }}"
                 />
             @else
