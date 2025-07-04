@@ -8,6 +8,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.41.3",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "spatie/laravel-permission": "^6.10"
     },
     "require-dev": {
