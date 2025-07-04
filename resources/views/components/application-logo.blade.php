@@ -1,12 +1,13 @@
 @php
     use App\Models\Setting;
+    use Illuminate\Support\Facades\Storage;
     $storeName = Setting::get('store_name', 'Toko Budi');
     $storeIcon = Setting::get('store_icon');
 @endphp
 
 @if ($storeIcon)
     <div class="flex items-center">
-        <img src="{{ asset('storage/' . $storeIcon) }}" alt="{{ $storeName }}" class="w-10 h-10 mr-2">
+        <img src="{{ Storage::disk('s3')->url($storeIcon) }}" alt="{{ $storeName }}" class="w-10 h-10 mr-2">
         <span class="text-lg font-bold">{{ $storeName }}</span>
     </div>
 @else
