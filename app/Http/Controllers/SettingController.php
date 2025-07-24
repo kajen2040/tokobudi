@@ -40,8 +40,8 @@ class SettingController extends Controller
         // Handle icon removal if requested
         if ($request->has('remove_icon') && $request->remove_icon == '1') {
             $oldIcon = Setting::get('store_icon');
-            if ($oldIcon && Storage::disk('s3')->exists($oldIcon)) {
-                Storage::disk('s3')->delete($oldIcon);
+            if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
+                Storage::delete('public/' . $oldIcon);
             }
             Setting::set('store_icon', null);
         }
@@ -49,12 +49,12 @@ class SettingController extends Controller
         elseif ($request->hasFile('store_icon')) {
             // Delete old icon if exists
             $oldIcon = Setting::get('store_icon');
-            if ($oldIcon && Storage::disk('s3')->exists($oldIcon)) {
-                Storage::disk('s3')->delete($oldIcon);
+            if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
+                Storage::delete('public/' . $oldIcon);
             }
 
-            // Store new icon to S3
-            $iconPath = $request->file('store_icon')->store('store', 's3');
+            // Store new icon to public disk
+            $iconPath = $request->file('store_icon')->store('store', 'public');
             Setting::set('store_icon', $iconPath);
         }
 
