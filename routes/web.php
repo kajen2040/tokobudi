@@ -202,6 +202,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
     Route::prefix('setting')
         ->name('setting.')
+        ->middleware('optimize.files')
         ->group(function () {
             Route::get('/', [App\Http\Controllers\SettingController::class, 'index'])
                 ->name('index');

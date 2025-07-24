@@ -159,7 +159,7 @@
                                 @enderror
                             </div>
                             <div class="form-help mt-3">
-                                Format file: JPG, PNG, GIF. Ukuran maksimal: 2MB. Rekomendasi: 200x200px.
+                                Format file: JPG, PNG, GIF. Ukuran maksimal: 1MB. Rekomendasi: 200x200px.
                             </div>
                         </div>
 
