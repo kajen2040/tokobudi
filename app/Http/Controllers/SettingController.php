@@ -26,10 +26,14 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate([
-            'store_name' => 'required|string|max:255',
-            'store_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'store_name' => 'required|string|max:255',
+                'store_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
 
         // Update store name
         Setting::set('store_name', $request->store_name);
@@ -47,20 +51,29 @@ class SettingController extends Controller
         }
         // Update store icon if provided
         elseif ($request->hasFile('store_icon')) {
-            // Delete old icon if exists
-            $oldIcon = Setting::get('store_icon');
-            if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
-                Storage::delete('public/' . $oldIcon);
-            }
+            try {
+                // Delete old icon if exists
+                $oldIcon = Setting::get('store_icon');
+                if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
+                    Storage::delete('public/' . $oldIcon);
+                }
 
-            // Store new icon to public disk
-            $iconPath = $request->file('store_icon')->store('store', 'public');
-            Setting::set('store_icon', $iconPath);
+                // Store new icon to public disk
+                $iconPath = $request->file('store_icon')->store('store', 'public');
+                Setting::set('store_icon', $iconPath);
+            } catch (\Exception $e) {
+                \Log::error('Icon upload failed: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Gagal mengupload ikon: ' . $e->getMessage());
+            }
         }
 
         // Clear the view cache to ensure new settings are applied
-        if (function_exists('artisan')) {
-            \Artisan::call('view:clear');
+        try {
+            if (function_exists('artisan')) {
+                \Artisan::call('view:clear');
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to clear view cache: ' . $e->getMessage());
         }
 
         return redirect()->route('setting.index')

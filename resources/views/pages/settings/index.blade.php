@@ -72,21 +72,34 @@
                 <div class="p-5">
                     @if(session('success'))
                         <div id="successNotification" class="alert-success-custom animate__animated animate__fadeInDown mb-6">
-                            <div class="flex p-4 rounded-md bg-success/20 border-l-4 border-success overflow-hidden relative">
-                                <div class="flex-none">
-                                    <div class="bg-success text-white rounded-full p-2 mr-3">
-                                        <i data-lucide="check" class="w-5 h-5"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="font-medium text-base text-success">Berhasil!</div>
-                                    <div class="text-success/80 mt-1">{{ session('success') }}</div>
-                                </div>
-                                <button type="button" class="absolute top-2 right-2 text-success/60 hover:text-success" onclick="closeNotification()">
-                                    <i data-lucide="x" class="w-5 h-5"></i>
-                                </button>
-                                <div class="notification-progress"></div>
+                            <div class="flex items-center">
+                                <i data-lucide="check-circle" class="w-5 h-5 mr-2 text-emerald-600"></i>
+                                <span class="text-emerald-700 font-medium">{{ session('success') }}</span>
                             </div>
+                            <div class="notification-progress"></div>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+                            <div class="flex items-center">
+                                <i data-lucide="alert-circle" class="w-5 h-5 mr-2 text-red-600"></i>
+                                <span class="font-medium">{{ session('error') }}</span>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="alert alert-danger bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+                            <div class="flex items-center mb-2">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 mr-2 text-red-600"></i>
+                                <span class="font-medium">Terjadi kesalahan:</span>
+                            </div>
+                            <ul class="list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
 
@@ -289,19 +302,32 @@
         
         // Handle file selection
         fileInput.addEventListener('change', function(e) {
+            console.log('File input changed:', this.files);
             if (this.files && this.files[0]) {
                 const file = this.files[0];
+                console.log('File selected:', file.name, 'Size:', file.size, 'Type:', file.type);
                 
                 // Check file size
                 if (file.size > 2 * 1024 * 1024) {
                     alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                    console.log('File too large:', file.size);
                     this.value = '';
                     return;
                 }
                 
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('File harus berupa gambar.');
+                    console.log('Invalid file type:', file.type);
+                    this.value = '';
+                    return;
+                }
+                
+                console.log('File validation passed, reading...');
                 // Preview new image
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    console.log('File loaded successfully');
                     newImage.src = e.target.result;
                     
                     // Update all preview icons
@@ -312,6 +338,10 @@
                     currentImage.classList.add('hidden');
                     newImagePreview.classList.remove('hidden');
                     removeIconField.value = '0';
+                };
+                reader.onerror = function(e) {
+                    console.error('Error reading file:', e);
+                    alert('Error membaca file.');
                 };
                 reader.readAsDataURL(file);
             }
