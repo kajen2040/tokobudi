@@ -19,7 +19,7 @@
             <div class="flex flex-col items-center">
                 <a href="/">
                     @if(isset($storeSettings['store_icon']) && $storeSettings['store_icon'])
-                        <img src="{{ Storage::disk('s3')->url($storeSettings['store_icon']) }}" 
+                        <img src="{{ asset('storage/' . $storeSettings['store_icon']) }}" 
                              alt="{{ $storeSettings['store_name'] }}" 
                              class="w-24 h-24 object-contain mb-2">
                     @else

@@ -7,7 +7,7 @@
 
 @if ($storeIcon)
     <div class="flex items-center">
-        <img src="{{ Storage::disk('s3')->url($storeIcon) }}" alt="{{ $storeName }}" class="w-10 h-10 mr-2">
+        <img src="{{ asset('storage/' . $storeIcon) }}" alt="{{ $storeName }}" class="w-10 h-10 mr-2">
         <span class="text-lg font-bold">{{ $storeName }}</span>
     </div>
 @else
