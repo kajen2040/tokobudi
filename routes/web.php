@@ -67,6 +67,16 @@ Route::middleware(['auth', 'verified', 'role:kasir|admin'])->group(function () {
                 ->name('retur');
         }
     );
+
+    Route::prefix('laporan')
+        ->name('laporan.')
+        ->group(function () {
+            Route::get('/', [LaporanController::class, 'index'])
+                ->name('index');
+            Route::get('/export', [LaporanController::class, 'export'])
+                ->name('export');
+        }
+    );
 });
 
 // Routes accessible only by admin
@@ -189,14 +199,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
             Route::delete('/{user}', [UserController::class, 'destroy'])
                 ->name('destroy');
-        }
-    );
-
-    Route::prefix('laporan')
-        ->name('laporan.')
-        ->group(function () {
-            Route::get('/', [LaporanController::class, 'index'])
-                ->name('index');
         }
     );
 
