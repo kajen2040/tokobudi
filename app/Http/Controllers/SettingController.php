@@ -41,16 +41,8 @@ class SettingController extends Controller
         // Update app name in config (for current request only)
         config(['app.name' => $request->store_name]);
 
-        // Handle icon removal if requested
-        if ($request->has('remove_icon') && $request->remove_icon == '1') {
-            $oldIcon = Setting::get('store_icon');
-            if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
-                Storage::delete('public/' . $oldIcon);
-            }
-            Setting::set('store_icon', null);
-        }
         // Update store icon if provided
-        elseif ($request->hasFile('store_icon')) {
+        if ($request->hasFile('store_icon')) {
             try {
                 // Delete old icon if exists
                 $oldIcon = Setting::get('store_icon');

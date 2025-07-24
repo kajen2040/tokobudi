@@ -138,50 +138,24 @@
                         </div>
 
                         <div class="mt-5">
-                            <x-base.form-label class="font-medium mb-3" for="store_icon">
+                            <x-base.form-label class="font-medium" for="store_icon">
                                 Ikon Toko
                             </x-base.form-label>
-                            <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4" id="dropzone">
-                                <div class="flex flex-wrap px-4 w-full">
-                                    <div id="imagePreview" class="w-full flex justify-center items-center mb-5 @if($settings['store_icon']) hidden @endif">
-                                        <div class="text-center">
-                                            <div class="mx-auto">
-                                                <i data-lucide="image" class="w-12 h-12 text-slate-300"></i>
-                                            </div>
-                                            <div class="text-slate-500 dark:text-slate-400 mt-2">
-                                                Belum ada ikon toko
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="currentImage" class="image-preview w-full flex justify-center items-center mb-5 @if(!$settings['store_icon']) hidden @endif">
-                                        <div class="relative">
-                                            <img 
-                                                src="{{ $settings['store_icon'] ? asset('storage/' . $settings['store_icon']) : '' }}" 
-                                                alt="Current Store Icon" 
-                                                class="rounded-md max-h-32 max-w-[200px] object-contain"
-                                            >
-                                            <button type="button" id="removeImage" class="absolute top-0 right-0 -mr-2 -mt-2 w-5 h-5 rounded-full bg-danger text-white flex items-center justify-center">
-                                                <i data-lucide="x" class="w-3 h-3"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div id="newImagePreview" class="w-full flex justify-center items-center mb-5 hidden">
-                                        <div class="relative">
-                                            <img src="" alt="New Store Icon" class="rounded-md max-h-32 max-w-[200px] object-contain">
-                                            <button type="button" id="removeNewImage" class="absolute top-0 right-0 -mr-2 -mt-2 w-5 h-5 rounded-full bg-danger text-white flex items-center justify-center">
-                                                <i data-lucide="x" class="w-3 h-3"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="px-4 pb-4 flex items-center cursor-pointer relative">
-                                    <i data-lucide="upload-cloud" class="w-4 h-4 mr-2 text-primary"></i> 
-                                    <span class="text-primary mr-1 font-medium">Upload file</span> atau tarik dan letakkan
-                                    <input id="store_icon" type="file" name="store_icon" class="w-full h-full top-0 left-0 absolute opacity-0" accept="image/*">
-                                    <input type="hidden" name="remove_icon" id="remove_icon" value="0">
-                                </div>
+                            <div class="mt-2">
+                                @if($settings['store_icon'])
+                                    <img id="store-icon-preview" src="{{ asset('storage/' . $settings['store_icon']) }}" alt="Current Store Icon" class="mb-2 h-32 w-32 object-cover rounded-lg">
+                                @else
+                                    <img id="store-icon-preview" src="" alt="Preview" class="hidden mb-2 h-32 w-32 object-cover rounded-lg">
+                                @endif
+                                <x-base.form-input
+                                    id="store_icon"
+                                    type="file"
+                                    name="store_icon"
+                                    accept="image/*"
+                                    onchange="previewStoreIcon(this)"
+                                />
                                 @error('store_icon')
-                                    <div class="text-danger mt-2 px-4">{{ $message }}</div>
+                                    <div class="text-danger mt-2">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-help mt-3">
@@ -287,115 +261,8 @@
             previewNameSmall.textContent = this.value || 'Toko Budi';
         });
         
-        // File upload handling
-        const fileInput = document.getElementById('store_icon');
-        const dropzone = document.getElementById('dropzone');
-        const imagePreview = document.getElementById('imagePreview');
-        const currentImage = document.getElementById('currentImage');
-        const newImagePreview = document.getElementById('newImagePreview');
-        const newImage = newImagePreview.querySelector('img');
-        const removeImageBtn = document.getElementById('removeImage');
-        const removeNewImageBtn = document.getElementById('removeNewImage');
-        const removeIconField = document.getElementById('remove_icon');
         const previewIcon = document.getElementById('previewIcon');
         const previewIconSmall = document.getElementById('previewIconSmall');
-        
-        // Handle file selection
-        fileInput.addEventListener('change', function(e) {
-            console.log('File input changed:', this.files);
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                console.log('File selected:', file.name, 'Size:', file.size, 'Type:', file.type);
-                
-                // Check file size
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                    console.log('File too large:', file.size);
-                    this.value = '';
-                    return;
-                }
-                
-                // Check file type
-                if (!file.type.startsWith('image/')) {
-                    alert('File harus berupa gambar.');
-                    console.log('Invalid file type:', file.type);
-                    this.value = '';
-                    return;
-                }
-                
-                console.log('File validation passed, reading...');
-                // Preview new image
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    console.log('File loaded successfully');
-                    newImage.src = e.target.result;
-                    
-                    // Update all preview icons
-                    updatePreviews(e.target.result);
-                    
-                    // Show new image preview, hide others
-                    imagePreview.classList.add('hidden');
-                    currentImage.classList.add('hidden');
-                    newImagePreview.classList.remove('hidden');
-                    removeIconField.value = '0';
-                };
-                reader.onerror = function(e) {
-                    console.error('Error reading file:', e);
-                    alert('Error membaca file.');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        
-        // Handle drag and drop
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropzone.addEventListener(eventName, function(e) {
-                e.preventDefault();
-                this.classList.add('border-primary');
-            }, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropzone.addEventListener(eventName, function(e) {
-                e.preventDefault();
-                this.classList.remove('border-primary');
-            }, false);
-        });
-        
-        dropzone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-                const event = new Event('change', { bubbles: true });
-                fileInput.dispatchEvent(event);
-            }
-        });
-        
-        // Remove current image
-        removeImageBtn.addEventListener('click', function() {
-            currentImage.classList.add('hidden');
-            imagePreview.classList.remove('hidden');
-            removeIconField.value = '1';
-            
-            // Update previews to default
-            updatePreviews(null);
-        });
-        
-        // Remove new image
-        removeNewImageBtn.addEventListener('click', function() {
-            newImagePreview.classList.add('hidden');
-            fileInput.value = '';
-            
-            // If there's a current image, show it
-            if ('{{ $settings["store_icon"] }}') {
-                currentImage.classList.remove('hidden');
-                updatePreviews('{{ asset("storage/" . $settings["store_icon"]) }}');
-                removeIconField.value = '0';
-            } else {
-                imagePreview.classList.remove('hidden');
-                updatePreviews(null);
-            }
-        });
         
         // Function to update all preview icons
         function updatePreviews(src) {
@@ -435,21 +302,19 @@
             previewNameSmall.textContent = storeNameInput.value;
             
             // Reset file input
+            const fileInput = document.getElementById('store_icon');
+            const preview = document.getElementById('store-icon-preview');
             fileInput.value = '';
-            removeIconField.value = '0';
             
-            // Reset image previews
-            newImagePreview.classList.add('hidden');
-            
-            if ('{{ $settings["store_icon"] }}') {
-                currentImage.classList.remove('hidden');
-                imagePreview.classList.add('hidden');
+            // Reset icon preview
+            @if($settings['store_icon'])
+                preview.src = '{{ asset("storage/" . $settings["store_icon"]) }}';
+                preview.classList.remove('hidden');
                 updatePreviews('{{ asset("storage/" . $settings["store_icon"]) }}');
-            } else {
-                imagePreview.classList.remove('hidden');
-                currentImage.classList.add('hidden');
+            @else
+                preview.classList.add('hidden');
                 updatePreviews(null);
-            }
+            @endif
         });
         
         // Form submission
@@ -465,6 +330,54 @@
             saveBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menyimpan...';
         });
     });
+
+    function previewStoreIcon(input) {
+        const preview = document.getElementById('store-icon-preview');
+        const previewIcon = document.getElementById('previewIcon');
+        const previewIconSmall = document.getElementById('previewIconSmall');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                
+                // Update preview icons
+                updatePreviews(e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function updatePreviews(src) {
+        const previewIcon = document.getElementById('previewIcon');
+        const previewIconSmall = document.getElementById('previewIconSmall');
+        const previewIcons = [previewIcon, previewIconSmall];
+        
+        previewIcons.forEach(preview => {
+            // Clear existing content
+            preview.innerHTML = '';
+            
+            if (src) {
+                // Create image element
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = document.getElementById('store_name').value || 'Toko Budi';
+                img.className = 'max-w-full max-h-full object-contain';
+                preview.appendChild(img);
+            } else {
+                // Add default icon
+                preview.innerHTML = `
+                    <svg width="${preview === previewIcon ? '48px' : '24px'}" height="${preview === previewIcon ? '48px' : '24px'}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                        <g><defs><style>.cls-1{fill:#f19b5f;}.cls-2{fill:#ffce69;}.cls-3{fill:#6c2e7c;}</style></defs>
+                        <g id="Icons"><path class="cls-1" d="M18.6,23H5.4a3,3,0,0,1-2.98-3.37l.39-3.13.86-6.87A3.01,3.01,0,0,1,6.65,7h10.7a3.01,3.01,0,0,1,2.98,2.63l.86,6.87.39,3.13A3,3,0,0,1,18.6,23Z"></path>
+                        <path class="cls-2" d="M21.19,16.5A2.976,2.976,0,0,1,18.6,18H5.4a2.976,2.976,0,0,1-2.59-1.5l.86-6.87A3.01,3.01,0,0,1,6.65,7h10.7a3.01,3.01,0,0,1,2.98,2.63Z"></path></g>
+                        <g data-name="Layer 4" id="Layer_4"><path class="cls-3" d="M5.4,24H18.6a4,4,0,0,0,3.968-4.5l-1.25-10A4.005,4.005,0,0,0,17.352,6H17V5A5,5,0,0,0,7,5V6H6.648A4.005,4.005,0,0,0,2.68,9.5l-1.25,10A4,4,0,0,0,5.4,24ZM9,5a3,3,0,0,1,6,0V6H9ZM3.414,19.752l1.25-10A2,2,0,0,1,6.648,8H7v2a1,1,0,0,0,2,0V8h6v2a1,1,0,0,0,2,0V8h.352a2,2,0,0,1,1.984,1.752l1.25,10A2,2,0,0,1,18.6,22H5.4a2,2,0,0,1-1.984-2.248Z"></path></g></g>
+                    </svg>
+                `;
+            }
+        });
+    }
 
     // Auto dismiss notification
     document.addEventListener('DOMContentLoaded', function() {
