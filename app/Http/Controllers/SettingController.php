@@ -26,14 +26,10 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-        try {
-            $request->validate([
-                'store_name' => 'required|string|max:255',
-                'store_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        }
+        $request->validate([
+            'store_name' => 'required|string|max:255',
+            'store_icon' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
         // Update store name
         Setting::set('store_name', $request->store_name);
@@ -43,48 +39,15 @@ class SettingController extends Controller
 
         // Update store icon if provided
         if ($request->hasFile('store_icon')) {
-            try {
-                // Laravel Cloud optimization: Process image early
-                $file = $request->file('store_icon');
-                
-                // Additional validation for Laravel Cloud
-                if (!$file->isValid()) {
-                    throw new \Exception('File upload tidak valid');
-                }
-                
-                // Check actual file size (Laravel Cloud optimization)
-                if ($file->getSize() > 1048576) { // 1MB in bytes
-                    throw new \Exception('Ukuran file terlalu besar. Maksimal 1MB');
-                }
-
-                // Delete old icon if exists
-                $oldIcon = Setting::get('store_icon');
-                if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
-                    Storage::delete('public/' . $oldIcon);
-                }
-
-                // Store new icon to public disk with Laravel Cloud optimization
-                $iconPath = $file->store('store', 'public');
-                Setting::set('store_icon', $iconPath);
-                
-                // Clear any relevant caches for Laravel Cloud
-                if (function_exists('opcache_reset')) {
-                    opcache_reset();
-                }
-                
-            } catch (\Exception $e) {
-                \Log::error('Icon upload failed: ' . $e->getMessage());
-                return redirect()->back()->with('error', 'Gagal mengupload ikon: ' . $e->getMessage());
+            // Delete old icon if exists
+            $oldIcon = Setting::get('store_icon');
+            if ($oldIcon && Storage::exists('public/' . $oldIcon)) {
+                Storage::delete('public/' . $oldIcon);
             }
-        }
 
-        // Clear the view cache to ensure new settings are applied
-        try {
-            if (function_exists('artisan')) {
-                \Artisan::call('view:clear');
-            }
-        } catch (\Exception $e) {
-            \Log::warning('Failed to clear view cache: ' . $e->getMessage());
+            // Store new icon to public disk
+            $iconPath = $request->file('store_icon')->store('store', 'public');
+            Setting::set('store_icon', $iconPath);
         }
 
         return redirect()->route('setting.index')
