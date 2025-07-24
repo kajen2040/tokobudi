@@ -10,16 +10,16 @@
             <span class="text-primary">Laporan Penjualan</span> 
         </h2>
         <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-2 sm:gap-3 mt-0 no-print">
-            <x-base.button variant="outline-primary" class="shadow-md min-h-[40px] text-sm" id="printBtn">
+            <button type="button" class="bg-white border border-primary text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-md shadow-md min-h-[40px] text-sm flex items-center" onclick="printReport()">
                 <i data-lucide="printer" class="w-4 h-4 mr-2"></i> 
                 <span class="hidden sm:inline">Print Laporan</span>
                 <span class="sm:hidden">Print</span>
-            </x-base.button>
-            <x-base.button variant="primary" class="shadow-md min-h-[40px] text-sm" id="exportBtn">
+            </button>
+            <button type="button" class="bg-primary border border-primary text-white hover:bg-primary-dark px-4 py-2 rounded-md shadow-md min-h-[40px] text-sm flex items-center" onclick="exportReport()">
                 <i data-lucide="download" class="w-4 h-4 mr-2"></i> 
                 <span class="hidden sm:inline">Download CSV</span>
                 <span class="sm:hidden">Export</span>
-            </x-base.button>
+            </button>
         </div>
     </div>
 
@@ -435,35 +435,111 @@
 
 @push('scripts')
 <script>
+// Global functions for button handlers
+function printReport() {
+    console.log('Print Report function called');
+    try {
+        // Update print period
+        updatePrintPeriod();
+        
+        // Show print header
+        const printHeader = document.querySelector('.print-header');
+        if (printHeader) {
+            printHeader.style.display = 'block';
+        }
+        
+        // Small delay then print
+        setTimeout(() => {
+            window.print();
+            
+            // Hide print header after print
+            setTimeout(() => {
+                if (printHeader) {
+                    printHeader.style.display = 'none';
+                }
+            }, 500);
+        }, 100);
+        
+    } catch (error) {
+        console.error('Print error:', error);
+        alert('Terjadi kesalahan saat mencetak. Silakan coba lagi.');
+    }
+}
+
+function exportReport() {
+    console.log('Export Report function called');
+    try {
+        const form = document.getElementById('filterForm');
+        if (!form) {
+            alert('Form filter tidak ditemukan');
+            return;
+        }
+        
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData).toString();
+        console.log('Export params:', params);
+        
+        // Show loading
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+            loadingIndicator.classList.remove('hidden');
+        }
+        
+        // Create export URL
+        const exportUrl = '{{ route("laporan.export") }}?' + params;
+        console.log('Export URL:', exportUrl);
+        
+        // Trigger download
+        window.location.href = exportUrl;
+        
+        // Hide loading after delay
+        setTimeout(() => {
+            if (loadingIndicator) {
+                loadingIndicator.classList.add('hidden');
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('Terjadi kesalahan saat mengexport data. Silakan coba lagi.');
+    }
+}
+
+function updatePrintPeriod() {
+    try {
+        const startDateInput = document.getElementById('tanggal_mulai');
+        const endDateInput = document.getElementById('tanggal_selesai');
+        const printPeriodElement = document.getElementById('printPeriod');
+        
+        if (startDateInput && endDateInput && printPeriodElement) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            
+            const periodText = startDate.toLocaleDateString('id-ID', options) + ' - ' + 
+                              endDate.toLocaleDateString('id-ID', options);
+            printPeriodElement.textContent = periodText;
+        }
+    } catch (error) {
+        console.error('Error updating print period:', error);
+    }
+}
+
 $(document).ready(function() {
-    console.log('Document ready - initializing report page');
+    console.log('Document ready - laporan page loaded');
     
-    // Check if buttons exist
-    console.log('Print button found:', $('#printBtn').length);
-    console.log('Export button found:', $('#exportBtn').length);
+    // Test if global functions are available
+    if (typeof printReport === 'function') {
+        console.log('printReport function is available');
+    } else {
+        console.error('printReport function NOT available');
+    }
     
-    // Also try with class selectors
-    console.log('Print button by class:', $('button[id="printBtn"]').length);
-    console.log('Export button by class:', $('button[id="exportBtn"]').length);
-    
-    // Wait a bit and check again
-    setTimeout(() => {
-        console.log('After timeout - Print button found:', $('#printBtn').length);
-        console.log('After timeout - Export button found:', $('#exportBtn').length);
-    }, 1000);
-    
-    // Alternative button handlers using document delegation
-    $(document).on('click', '#printBtn', function(e) {
-        e.preventDefault();
-        console.log('Print button clicked (delegated)');
-        handlePrint();
-    });
-    
-    $(document).on('click', '#exportBtn', function(e) {
-        e.preventDefault();
-        console.log('Export button clicked (delegated)');
-        handleExport();
-    });
+    if (typeof exportReport === 'function') {
+        console.log('exportReport function is available');
+    } else {
+        console.error('exportReport function NOT available');
+    }
 
     // Reset filters functionality
     function resetFilters() {
@@ -502,88 +578,9 @@ $(document).ready(function() {
         resetFilters();
     });
     
-    // Export button - direct handler
-    $('#exportBtn').on('click', function(e) {
-        e.preventDefault();
-        console.log('Export button clicked (direct)');
-        handleExport();
-    });
+
     
-    // Print button - direct handler
-    $('#printBtn').on('click', function(e) {
-        e.preventDefault();
-        console.log('Print button clicked (direct)');
-        handlePrint();
-    });
-    
-    // Function to update print period
-    function updatePrintPeriod() {
-        const startDate = new Date($('#tanggal_mulai').val());
-        const endDate = new Date($('#tanggal_selesai').val());
-        const options = { day: '2-digit', month: 'long', year: 'numeric' };
-        
-        const periodText = startDate.toLocaleDateString('id-ID', options) + ' - ' + 
-                          endDate.toLocaleDateString('id-ID', options);
-        $('#printPeriod').text(periodText);
-    }
-    
-    // Separated handler functions
-    function handlePrint() {
-        console.log('Handling print...');
-        try {
-            // Update print period
-            updatePrintPeriod();
-            
-            // Show print header
-            $('.print-header').show();
-            console.log('Print header shown');
-            
-            // Small delay to ensure header is shown
-            setTimeout(() => {
-                console.log('Triggering print dialog');
-                window.print();
-                
-                // Hide print header after print dialog
-                setTimeout(() => {
-                    $('.print-header').hide();
-                    console.log('Print header hidden');
-                }, 500);
-            }, 100);
-            
-        } catch (error) {
-            console.error('Print error:', error);
-            alert('Terjadi kesalahan saat mencetak. Silakan coba lagi.');
-        }
-    }
-    
-    function handleExport() {
-        console.log('Handling export...');
-        try {
-            const formData = new FormData(document.getElementById('filterForm'));
-            const params = new URLSearchParams(formData).toString();
-            console.log('Export params:', params);
-            
-            // Show loading
-            $('#loadingIndicator').removeClass('hidden');
-            
-            // Create export URL
-            const exportUrl = '{{ route("laporan.export") }}?' + params;
-            console.log('Export URL:', exportUrl);
-            
-            // Trigger download
-            window.location.href = exportUrl;
-            
-            // Hide loading after delay
-            setTimeout(() => {
-                $('#loadingIndicator').addClass('hidden');
-            }, 2000);
-            
-        } catch (error) {
-            console.error('Export error:', error);
-            $('#loadingIndicator').addClass('hidden');
-            alert('Terjadi kesalahan saat mengexport data. Silakan coba lagi.');
-        }
-    }
+
 
     // Date validation
     function validateDates() {
