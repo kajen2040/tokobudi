@@ -143,7 +143,7 @@
                             </x-base.form-label>
                             <div class="mt-2">
                                 @if($settings['store_icon'])
-                                    <img id="store-icon-preview" src="{{ asset('storage/' . $settings['store_icon']) }}" alt="Current Store Icon" class="mb-2 h-32 w-32 object-cover rounded-lg">
+                                    <img id="store-icon-preview" src="{{ \App\Models\Setting::getStoreIconUrl() }}" alt="Current Store Icon" class="mb-2 h-32 w-32 object-cover rounded-lg">
                                 @else
                                     <img id="store-icon-preview" src="" alt="Preview" class="hidden mb-2 h-32 w-32 object-cover rounded-lg">
                                 @endif
@@ -194,7 +194,7 @@
                             <div class="flex items-center bg-white p-5 rounded-md shadow-md">
                                 <div id="previewIcon" class="w-12 h-12 mr-3 flex items-center justify-center">
                                     @if($settings['store_icon'])
-                                        <img src="{{ asset('storage/' . $settings['store_icon']) }}" alt="{{ $settings['store_name'] }}" class="max-w-full max-h-full object-contain">
+                                        <img src="{{ \App\Models\Setting::getStoreIconUrl() }}" alt="{{ $settings['store_name'] }}" class="max-w-full max-h-full object-contain">
                                     @else
                                         <svg width="48px" height="48px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                             <g><defs><style>.cls-1{fill:#f19b5f;}.cls-2{fill:#ffce69;}.cls-3{fill:#6c2e7c;}</style></defs>
@@ -217,7 +217,7 @@
                                 <div class="bg-white dark:bg-darkmode-600 rounded-md p-3 flex items-center">
                                     <div id="previewIconSmall" class="w-8 h-8 mr-2 flex items-center justify-center">
                                         @if($settings['store_icon'])
-                                            <img src="{{ asset('storage/' . $settings['store_icon']) }}" alt="{{ $settings['store_name'] }}" class="max-w-full max-h-full object-contain">
+                                            <img src="{{ \App\Models\Setting::getStoreIconUrl() }}" alt="{{ $settings['store_name'] }}" class="max-w-full max-h-full object-contain">
                                         @else
                                             <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                                 <g><defs><style>.cls-1{fill:#f19b5f;}.cls-2{fill:#ffce69;}.cls-3{fill:#6c2e7c;}</style></defs>
@@ -308,9 +308,9 @@
             
             // Reset icon preview
             @if($settings['store_icon'])
-                preview.src = '{{ asset("storage/" . $settings["store_icon"]) }}';
+                preview.src = '{{ \App\Models\Setting::getStoreIconUrl() }}';
                 preview.classList.remove('hidden');
-                updatePreviews('{{ asset("storage/" . $settings["store_icon"]) }}');
+                updatePreviews('{{ \App\Models\Setting::getStoreIconUrl() }}');
             @else
                 preview.classList.add('hidden');
                 updatePreviews(null);

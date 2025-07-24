@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Setting extends Model
 {
@@ -27,5 +28,19 @@ class Setting extends Model
     public static function set(string $key, $value): void
     {
         self::updateOrCreate(['key' => $key], ['value' => $value]);
+    }
+
+    /**
+     * Get store icon URL from Laravel Cloud bucket
+     */
+    public static function getStoreIconUrl()
+    {
+        $storeIcon = self::get('store_icon');
+        
+        if ($storeIcon) {
+            return Storage::disk('s3')->url($storeIcon);
+        }
+        
+        return null;
     }
 }
